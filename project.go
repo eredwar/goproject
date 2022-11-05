@@ -9,8 +9,11 @@ import (
 
 // TODO - struct for session ID
 type SessionID struct {
-	ID string
-	
+	User       string
+	ID         string
+	Password   string
+	SessionURL string
+	List       []Recipe
 }
 
 // struct representing a recipe item
@@ -101,8 +104,15 @@ func recipeHandler(w http.ResponseWriter, r *http.Request) {
 	checkError(err)
 }
 
+// Login handler
+func loginHandler(w http.ResponseWriter, r *http.Request) {
+	htmlForm := `<h1>Login to RecipeList</h1>`	
+}
+
+// Search handler to list the recipe handlers.
+
 shoppingTemplate := `<h1>Shopping Page</h1>
-<>`
+<ol></ol>`
 
 func shoppingListHandler(w http.ResponseWriter, r *http.Request) {
 	shoppingPage, err := template.New("shoppingPage").Parse(shoppingTemplate)
