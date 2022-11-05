@@ -55,7 +55,7 @@ func checkError(err error) {
 
 // http://localhost:8000/recipe?id=test
 
-// add to shopping list functionality
+// TODO - add to shopping list functionality
 const recipeTemplate = `<title>{{.Title}}</title>
 <h1>{{.Title}}</h1>
 <p>Submitted by {{.Author}} on {{.Date}}.</p>
