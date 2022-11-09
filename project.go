@@ -106,7 +106,11 @@ func recipeHandler(w http.ResponseWriter, r *http.Request) {
 
 // Login handler
 func loginHandler(w http.ResponseWriter, r *http.Request) {
-	htmlForm := `<h1>Login to RecipeList</h1>`	
+	htmlForm := `<h1>Login to RecipeList</h1>
+	<form action="/blog">
+		<div>Username: <input type="text" value="userName"></div>
+	</form>
+	`	
 }
 
 // Search handler to list the recipe handlers.
