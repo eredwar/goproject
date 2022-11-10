@@ -109,6 +109,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	htmlForm := `<h1>Login to RecipeList</h1>
 	<form action="/blog">
 		<div>Username: <input type="text" value="userName"></div>
+		<div></div>
 	</form>
 	`	
 }
@@ -116,7 +117,9 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 // Search handler to list the recipe handlers.
 
 shoppingTemplate := `<h1>Shopping Page</h1>
-<ol></ol>`
+<ol>
+	<li></li>
+</ol>`
 
 func shoppingListHandler(w http.ResponseWriter, r *http.Request) {
 	shoppingPage, err := template.New("shoppingPage").Parse(shoppingTemplate)
