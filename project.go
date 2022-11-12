@@ -43,12 +43,13 @@ var recipes = []Recipe{
 }
 
 func main() {
+	http.HandleFunc("/login", loginHandler)
+	http.HandleFunc("/signup", signupHandler)
 	/*
-	  http.HandleFunc("/login", loginHandler)
-	  http.HandleFunc("/signup", signupHandler)
-	  http.HandleFunc("/shoppinglist", shoppinglistHandler)
-	  http.HandleFunc("/blog", blogHandler)
+	http.HandleFunc("/shoppinglist", shoppinglistHandler)
 	*/
+	http.HandleFunc("/blog", blogHandler)
+	
 	http.HandleFunc("/recipe", recipeHandler)
 	log.Fatal(http.ListenAndServe("localhost:8000", nil))
 }
@@ -107,7 +108,7 @@ func recipeHandler(w http.ResponseWriter, r *http.Request) {
 // Login handler
 func loginHandler(w http.ResponseWriter, r *http.Request) {
 	htmlForm := `<h1>Login to RecipeList</h1>
-	<form action="/blog">
+	<form action="/blog" method="POST">
 		<div>Username: <input type="text" value="userName"></div>
 		<div>Password: <input type="text" value="password"></div>
 		<div><input type="submit"></div>
