@@ -112,8 +112,8 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		<div>Username: <input type="text" value="userName"></div>
 		<div>Password: <input type="text" value="password"></div>
 		<div><input type="submit"></div>
-	</form>
-	`	
+	</form>`	
+	fmt.Fprintf(w, htmlForm)
 }
 
 // Search handler to list the recipe handlers.
