@@ -1,3 +1,4 @@
+// Recipe Project by Erik Edwards and Aaron Haas
 package main
 
 import (
@@ -5,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"os"
 )
 
 // TODO - struct for session ID
@@ -112,13 +114,31 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		<div>Username: <input type="text" value="userName"></div>
 		<div>Password: <input type="text" value="password"></div>
 		<div><input type="submit"></div>
-	</form>`	
+	</form>
+	<div>Don't have account? <a href="/signup">Sign up</a>.</div>`	
 	fmt.Fprintf(w, htmlForm)
 }
 
-// Search handler to list the recipe handlers.
+// Sign Up handler
+func signupHandler(w http.ResponseWriter, r *http.Request) {
+	htmlForm := `<h1>Sign Up to RecipeList</h1>
+	<form action="/blog" method="POST">
+	<div>Username: <input type="text" value="userName"></div>
+	<div>Password: <input type="text" value="password"></div>
+	<div><input type="submit"></div>
+	</form>`
+	fmt.Fprintf(w, htmlForm)
+}
 
-shoppingTemplate := `<h1>Shopping Page</h1>
+// Blog handler
+
+
+// Search handler to list the recipe handlers.
+func searchHandler(w http.ResponseWriter, r *http.Request) {
+	
+}
+
+shoppingTemplate := `<h1>Shopping Page for Reipes</h1>
 <ol>
 	<li></li>
 </ol>`
