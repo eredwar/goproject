@@ -109,7 +109,8 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	htmlForm := `<h1>Login to RecipeList</h1>
 	<form action="/blog">
 		<div>Username: <input type="text" value="userName"></div>
-		<div></div>
+		<div>Password: <input type="text" value="password"></div>
+		<div><input type="submit"></div>
 	</form>
 	`	
 }
