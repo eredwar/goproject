@@ -44,14 +44,18 @@ var recipes = []Recipe{
 		Instructions: []string{"Walk 10 feet", "Turn right"}},
 }
 
+// test shopping recipes
+var shoppingRecipes = []Recipe{
+	{Title: "Baked Feta", Author:},
+}
+
 func main() {
 	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/signup", signupHandler)
-	/*
 	http.HandleFunc("/shoppinglist", shoppinglistHandler)
-	*/
+	http.HandleFunc("/save", saveHandler)
 	http.HandleFunc("/blog", blogHandler)
-	
+
 	http.HandleFunc("/recipe", recipeHandler)
 	log.Fatal(http.ListenAndServe("localhost:8000", nil))
 }
@@ -126,22 +130,22 @@ func signupHandler(w http.ResponseWriter, r *http.Request) {
 	<div>Username: <input type="text" value="userName"></div>
 	<div>Password: <input type="text" value="password"></div>
 	<div><input type="submit"></div>
-	</form>`
+	</form>
+	<div>Already have an account? <a href="/login">Log in</a>.</div>`
 	fmt.Fprintf(w, htmlForm)
 }
 
 // Blog handler
-
+func blogHandler(w http.ResponseWriter, r *http.Request)
 
 // Search handler to list the recipe handlers.
 func searchHandler(w http.ResponseWriter, r *http.Request) {
 	
 }
 
+// Save handler for saving
 shoppingTemplate := `<h1>Shopping Page for Reipes</h1>
-<ol>
-	<li></li>
-</ol>`
+`
 
 func shoppingListHandler(w http.ResponseWriter, r *http.Request) {
 	shoppingPage, err := template.New("shoppingPage").Parse(shoppingTemplate)
