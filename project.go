@@ -1,12 +1,18 @@
-// Recipe Project by Erik Edwards and Aaron Haas
+// Recipe Blog Project by Erik Edwards and Aaron Haas
 package main
 
 import (
+	"encoding/json"
+	"fmt"
+	"html"
 	"html/template"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
+	"strings"
+	"time"
 )
 
 // TODO - struct for session ID
@@ -36,27 +42,44 @@ type Ingredient struct {
 
 // test recipes
 var recipes = []Recipe{
-	{Title: "Pizza", Author: "Poco", Date: "11/4/2022", ID: "1",
+	{Title: "Pizza Pie", Author: "Poco", Date: "11/4/2022", ID: "0",
 		Ingredients:  []Ingredient{{"Dough", "10 grams"}, {"Sauce", "5 grams"}, {"Cheese", "1 cup"}},
 		Instructions: []string{"Add the ingredients together", "Cook"}},
-	{Title: "Torta", Author: "David Bowie", Date: "11/4/2022", ID: "2",
+	{Title: "Torta", Author: "David Bowie", Date: "11/4/2022", ID: "1",
 		Ingredients:  []Ingredient{{"Bread", "1 slice"}, {"Meat", "Enough"}, {"A rock", "1 whole"}},
 		Instructions: []string{"Walk 10 feet", "Turn right"}},
 }
 
 // test shopping recipes
+/*
 var shoppingRecipes = []Recipe{
 	{Title: "Baked Feta", Author:},
-}
+}*/
 
 func main() {
+	// load in recipes from recipes.json
+	file, err := os.Open("recipes.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+	data, _ := ioutil.ReadAll(file)
+	json.Unmarshal(data, &recipes)
+
 	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/signup", signupHandler)
-	http.HandleFunc("/shoppinglist", shoppinglistHandler)
-	http.HandleFunc("/save", saveHandler)
+	/*
+		http.HandleFunc("/shoppinglist", shoppinglistHandler)
+	*/
+	http.HandleFunc("/shoppinglist/update", listUpdateHandler)
+
 	http.HandleFunc("/blog", blogHandler)
 
+	http.HandleFunc("/js", jsHandler)
+
 	http.HandleFunc("/recipe", recipeHandler)
+	http.HandleFunc("/upload", uploadHandler)
+	http.HandleFunc("/upload/result", resultHandler)
 	log.Fatal(http.ListenAndServe("localhost:8000", nil))
 }
 
@@ -69,12 +92,15 @@ func checkError(err error) {
 
 // http://localhost:8000/recipe?id=test
 
-// TODO - add to shopping list functionality
-const recipeTemplate = `<title>{{.Title}}</title>
+const recipeTemplate = `<head>
+<title>{{.Title}}</title>
+<script type="text/javascript" src="http://localhost:8000/js">
+</script></head>
 <h1>{{.Title}}</h1>
 <p>Submitted by {{.Author}} on {{.Date}}.</p>
-<a href="localhost:8000/blog">-Return to Blog-</a>
-<a href="localhost:8000/shoppinglist">-View Shopping List-</a>
+<a href="http://localhost:8000/blog">-Return to Blog-</a>
+<a href="http://localhost:8000/shoppinglist">-View Shopping List-</a>
+<button type="button" onclick="updateCart({{.ID}})">Add to Grochery List</button>
 <ul>
 {{range .Ingredients}}
 <li>{{.Name}} -- {{.Quantity}}</li>
@@ -119,7 +145,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		<div>Password: <input type="text" value="password"></div>
 		<div><input type="submit"></div>
 	</form>
-	<div>Don't have account? <a href="/signup">Sign up</a>.</div>`	
+	<div>Don't have account? <a href="/signup">Sign up</a>.</div>`
 	fmt.Fprintf(w, htmlForm)
 }
 
@@ -135,12 +161,121 @@ func signupHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, htmlForm)
 }
 
-// Blog handler
-func blogHandler(w http.ResponseWriter, r *http.Request)
+const blogTemplate = `<head>
+<script type="text/javascript" src="http://localhost:8000/js">
+</script></head>
+<h1>Recipes</h1>
+<a href="http://localhost:8000/upload">-Upload a Recipe-</a>
+<table>
+<tr style='text-align: left'>
+  <th>Recipe</th>
+  <th>Author</th>
+  <th>Submitted On</th>
+</tr>
+{{range .}}
+<tr>
+  <td><a href='http://localhost:8000/recipe?id={{.ID}}'>{{.Title}}</td>
+  <td>{{.Author}}</td>
+  <td>{{.Date}}</td>
+  <td><button type="button" onclick="updateCart({{.ID}})">Add to Grochery List</button></td>
+</tr>
+{{end}}
+</table>`
 
+// http://localhost:8000/blog?title=pizza
+
+// Blog handler
+func blogHandler(w http.ResponseWriter, r *http.Request) {
+	valuesMap, err := url.ParseQuery(r.URL.RawQuery)
+	checkError(err)
+	// Parsing blog template
+	w.Header().Set("Content-Type", "text/html")
+	blogPage, err := template.New("blogPage").Parse(blogTemplate)
+	checkError(err)
+
+	// creates a blog page using 'title' as search value
+	if valuesMap["title"] != nil {
+		var search []Recipe
+		for i := range recipes {
+			if strings.Contains(
+				strings.ToLower(recipes[i].Title),
+				html.UnescapeString(strings.ToLower(valuesMap["title"][0])), // search is case insensitive
+			) {
+				search = append(search, recipes[i])
+			}
+		}
+		err = blogPage.Execute(w, search)
+		checkError(err)
+		// creates a blog page using 'ingredient' as search value
+	} else if valuesMap["ingredient"] != nil {
+		var search []Recipe
+		for i := range recipes {
+			for j := range recipes[i].Ingredients {
+				if strings.Contains(
+					strings.ToLower(recipes[i].Ingredients[j].Name),
+					html.UnescapeString(strings.ToLower(valuesMap["ingredient"][0])), // search is case insensitive
+				) {
+					search = append(search, recipes[i])
+				}
+			}
+		}
+		err = blogPage.Execute(w, search)
+		checkError(err)
+		// creates a blog page using all recipes
+	} else {
+		err = blogPage.Execute(w, recipes)
+		checkError(err)
+	}
+}
+
+func uploadHandler(w http.ResponseWriter, r *http.Request) {
+	uploadTemplate := `<h1>Recipe Upload</h1>
+		<form action="/upload/result" method="POST">
+			<div>Title<input type="text" name="title"></div>
+			<div>Ingredient<input type="text" name="ingredient"></div>
+			<div>Quantity<input type="text" name="quantity"></div>
+			<div>Instruction<input type="text" name="instruction"></div>
+			<div><input type="submit"></div>
+		</form>`
+	fmt.Fprintf(w, uploadTemplate)
+}
+
+func resultHandler(w http.ResponseWriter, r *http.Request) {
+
+	fmt.Println(r.Method)
+	// update recipes in memory
+	item := Recipe{Title: r.FormValue("title"),
+		ID:           fmt.Sprintf("%d", len(recipes)),
+		Author:       "Erik",
+		Date:         time.Now().Format("01/02/2022"),
+		Ingredients:  []Ingredient{{r.FormValue("ingredient"), r.FormValue("quantity")}},
+		Instructions: []string{r.FormValue("instruction")},
+	}
+	recipes = append(recipes, item)
+
+	// add recipe to json file
+	file, err := os.Create("recipes.json")
+	checkError(err)
+	defer file.Close()
+	data, err := json.MarshalIndent(recipes, "", " ")
+	checkError(err)
+	n, err := file.Write(data)
+
+	// serve page
+	if err != nil {
+		fmt.Fprintf(w, `<h1>Upload Error - Bytes Written %d, %s</h1>`, n, err)
+	} else {
+		fmt.Fprintf(w, `<h1>Upload Successful</h1>
+		<a href="http://localhost:8000/recipe?id=%s">-View Recipe-</a>`, item.ID)
+	}
+	fmt.Fprintf(w, `<a href="http://localhost:8000/blog">-Return to Blog-</a>`)
+
+}
+
+/*
 // Search handler to list the recipe handlers.
 func searchHandler(w http.ResponseWriter, r *http.Request) {
-	
+
 }
 
 // Save handler for saving
@@ -149,4 +284,19 @@ shoppingTemplate := `<h1>Shopping Page for Reipes</h1>
 
 func shoppingListHandler(w http.ResponseWriter, r *http.Request) {
 	shoppingPage, err := template.New("shoppingPage").Parse(shoppingTemplate)
+}
+*/
+
+func listUpdateHandler(w http.ResponseWriter, r *http.Request) {
+	valuesMap, err := url.ParseQuery(r.URL.RawQuery)
+	checkError(err)
+
+	// add logic for updating cart
+	fmt.Printf("ID to add to cart:%s", valuesMap["id"])
+	fmt.Fprintf(w, `<h1>Shopping Cart Updated</h1>`)
+}
+
+// sends 'project.js' on HTTP request
+func jsHandler(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "project.js")
 }
