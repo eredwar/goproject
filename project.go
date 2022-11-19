@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -229,18 +230,45 @@ func blogHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func uploadHandler(w http.ResponseWriter, r *http.Request) {
-	uploadTemplate := `<h1>Recipe Upload</h1>
+	uploadTemplate := `<head>
+	<script type="text/javascript" src="http://localhost:8000/js">
+	</script></head>
+	<h1>Recipe Upload</h1>
 		<form action="/upload/result" method="POST">
 			<div>Title<input type="text" name="title"></div>
-			<div>Ingredient<input type="text" name="ingredient"></div>
-			<div>Quantity<input type="text" name="quantity"></div>
-			<div>Instruction<input type="text" name="instruction"></div>
+			<div>Ingredient<input type="text" name="ingredient[0]"></div>
+			<div>Quantity<input type="text" name="quantity[0]"></div>
+			<div id="ingredientList"/></div>
+			<button type="button" onclick="addIngredient()">Add Ingredient</button>
+			<div>Instruction<input type="text" name="instruction[0]"></div>
+			<div id="instructionList"/></div>
+			<button type="button" onclick="addInstruction()">Add Instruction</button>
 			<div><input type="submit"></div>
+			<input type="hidden" id="ingredientCount" name="ingredientCount" value="1">
+			<input type="hidden" id="instructionCount" name="instructionCount" value="1">
 		</form>`
 	fmt.Fprintf(w, uploadTemplate)
 }
 
 func resultHandler(w http.ResponseWriter, r *http.Request) {
+
+	// get ingredients and instructions from form
+	var ingredientList []Ingredient
+	count, err := strconv.Atoi(r.FormValue("ingredientCount"))
+	checkError(err)
+	for i := 0; i < count; i++ {
+		ingredient := fmt.Sprintf("ingredient[%d]", i)
+		quantity := fmt.Sprintf("quantity[%d]", i)
+		ingredientList = append(ingredientList, Ingredient{r.FormValue(ingredient), r.FormValue(quantity)})
+	}
+
+	var instructionList []string
+	count, err = strconv.Atoi(r.FormValue("instructionCount"))
+	checkError(err)
+	for i := 0; i < count; i++ {
+		instruction := fmt.Sprintf("instruction[%d]", i)
+		instructionList = append(instructionList, r.FormValue(instruction))
+	}
 
 	fmt.Println(r.Method)
 	// update recipes in memory
@@ -248,8 +276,8 @@ func resultHandler(w http.ResponseWriter, r *http.Request) {
 		ID:           fmt.Sprintf("%d", len(recipes)),
 		Author:       "Erik",
 		Date:         time.Now().Format("01/02/2022"),
-		Ingredients:  []Ingredient{{r.FormValue("ingredient"), r.FormValue("quantity")}},
-		Instructions: []string{r.FormValue("instruction")},
+		Ingredients:  ingredientList,
+		Instructions: instructionList,
 	}
 	recipes = append(recipes, item)
 
@@ -292,7 +320,7 @@ func listUpdateHandler(w http.ResponseWriter, r *http.Request) {
 	checkError(err)
 
 	// add logic for updating cart
-	fmt.Printf("ID to add to cart:%s", valuesMap["id"])
+	fmt.Printf("ID to add to cart:%s\n", valuesMap["id"])
 	fmt.Fprintf(w, `<h1>Shopping Cart Updated</h1>`)
 }
 
