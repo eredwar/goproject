@@ -14,6 +14,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"math/rand"
 )
 
 // TODO - struct for session ID
@@ -69,6 +70,7 @@ func main() {
 
 	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/signup", signupHandler)
+	http.HandleFunc("/accountCheck", accountCheckHandler)
 	/*
 		http.HandleFunc("/shoppinglist", shoppinglistHandler)
 	*/
@@ -140,11 +142,14 @@ func recipeHandler(w http.ResponseWriter, r *http.Request) {
 
 // Login handler
 func loginHandler(w http.ResponseWriter, r *http.Request) {
-	sessionID := 
+	rand.Seed(time.Now().UnixNano())
+	sessionID := string(rand.Intn(90000))
 	htmlForm := `<h1>Login to RecipeList</h1>
 	<form action="/accountCheck" method="POST">
-		<div>Username: <input type="text" value="userName"></div>
-		<div>Password: <input type="text" value="password"> <input type="hidden" name="SessionID" value=""></div>
+		<div>Username: <input type="text" name="userName"></div>
+		<div><input type="hidden" name="login" value="true"></div>
+		<div>Password: <input type="text" name="password"></div> 
+		<div><input type="hidden" name="SessionID" value="`+sessionID+`"></div>
 		<div><input type="submit"></div>
 	</form>
 	<div>Don't have account? <a href="/signup">Sign up</a>.</div>`
@@ -153,14 +158,34 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 
 // Sign Up handler
 func signupHandler(w http.ResponseWriter, r *http.Request) {
+	rand.Seed(time.Now().UnixNano())
+	sessionID := string(rand.Intn(90000))
 	htmlForm := `<h1>Sign Up to RecipeList</h1>
 	<form action="/accountCheck" method="POST">
-	<div>Username: <input type="text" value="userName"></div>
-	<div>Password: <input type="text" value="password"></div>
+	<div>Username: <input type="text" name="userName"></div>
+	<div><input type="hidden" name="login" value="false"></div>
+	<div>Password: <input type="text" name="password"></div>
+	<div><input type="hidden" name="SessionID"></div>
 	<div><input type="submit"></div>
 	</form>
 	<div>Already have an account? <a href="/login">Log in</a>.</div>`
 	fmt.Fprintf(w, htmlForm)
+}
+
+func accountCheckHandler(w http.ResponseWriter, r *http.Request) {
+	f, err := nil, nil
+	newSession := nil
+	options := os.O_CREATE | os.O_APPEND
+	if r.FormValue("login") == "true" {
+		f, err = os.OpenFile("accounts.txt", options, os.FileMode(0600))
+		if err != nil {
+			log.Fatal(err)
+		}
+		
+	} else {
+		
+	}
+	f.close()
 }
 
 const blogTemplate = `<head>
