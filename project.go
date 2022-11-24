@@ -140,10 +140,11 @@ func recipeHandler(w http.ResponseWriter, r *http.Request) {
 
 // Login handler
 func loginHandler(w http.ResponseWriter, r *http.Request) {
+	sessionID := 
 	htmlForm := `<h1>Login to RecipeList</h1>
-	<form action="/blog" method="POST">
+	<form action="/accountCheck" method="POST">
 		<div>Username: <input type="text" value="userName"></div>
-		<div>Password: <input type="text" value="password"></div>
+		<div>Password: <input type="text" value="password"> <input type="hidden" name="SessionID" value=""></div>
 		<div><input type="submit"></div>
 	</form>
 	<div>Don't have account? <a href="/signup">Sign up</a>.</div>`
@@ -153,7 +154,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 // Sign Up handler
 func signupHandler(w http.ResponseWriter, r *http.Request) {
 	htmlForm := `<h1>Sign Up to RecipeList</h1>
-	<form action="/blog" method="POST">
+	<form action="/accountCheck" method="POST">
 	<div>Username: <input type="text" value="userName"></div>
 	<div>Password: <input type="text" value="password"></div>
 	<div><input type="submit"></div>
