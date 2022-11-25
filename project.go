@@ -59,6 +59,10 @@ var shoppingRecipes = []Recipe{
 	{Title: "Baked Feta", Author:},
 }*/
 
+// create a variable that holds the session ID
+var serverUser *SessionID = &SessionID{User: "None", ID: "00000", Password: "********", 
+				       SessionURL: "...", List: make([]Recipe)}
+
 func main() {
 	// load in recipes from recipes.json
 	file, err := os.Open("recipes.json")
@@ -150,7 +154,7 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		<div>Username: <input type="text" name="userName"></div>
 		<div><input type="hidden" name="login" value="true"></div>
 		<div>Password: <input type="text" name="password"></div> 
-		<div><input type="hidden" name="SessionID" value="`+sessionID+`"></div>
+		<div><input type="hidden" name="sessionID" value="`+sessionID+`"></div>
 		<div><input type="submit"></div>
 	</form>
 	<div>Don't have account? <a href="/signup">Sign up</a>.</div>`
@@ -166,7 +170,7 @@ func signupHandler(w http.ResponseWriter, r *http.Request) {
 	<div>Username: <input type="text" name="userName"></div>
 	<div><input type="hidden" name="login" value="false"></div>
 	<div>Password: <input type="text" name="password"></div>
-	<div><input type="hidden" name="SessionID" value="`+sessionID+`"></div>
+	<div><input type="hidden" name="sessionID" value="`+sessionID+`"></div>
 	<div><input type="submit"></div>
 	</form>
 	<div>Already have an account? <a href="/login">Log in</a>.</div>`
@@ -175,10 +179,11 @@ func signupHandler(w http.ResponseWriter, r *http.Request) {
 
 func accountCheckHandler(w http.ResponseWriter, r *http.Request) {
 	f, err := nil, nil
+	file := nil
 	count := 0
 	newSession := nil
 	options := os.O_CREATE | os.O_APPEND
-	var scanner *bufio.Scanner = nil
+	var scanner bufio.Scanner = nil
 	loggedIn := false
 	newAccount := true
 	
@@ -218,11 +223,23 @@ func accountCheckHandler(w http.ResponseWriter, r *http.Request) {
 			<div>Already have an account? <a href="localhost:8000/login">Log in here</a>.</div>`)
 		}
 	}
-	f.close()
-	
 	if loggedIn {
+		serverUser.User = r.FormValue("userName")
+		serverUser.ID = r.FormValue("sessionID")
+		serverUser.Password = r.FormValue("password")
+		serverUser.SessionURL = r.URL.Path
+		file, err = os.Open("recipes.txt") 
+		if err != nil {
+			log.Fatal(err)
+		}
+		scanner = bufio.NewScanner(file)
+		for scanner.Scan() {
+			serverUser.List = append(serverUser.List, Recipe{scanner.Text()})
+		}
+		file.close()
 		http.Redirect(w, r, "localhost:8000/blog", http.StatusSeeOther)
 	}
+	f.close()
 }
 
 const blogTemplate = `<head>
