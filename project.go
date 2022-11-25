@@ -15,6 +15,7 @@ import (
 	"strings"
 	"time"
 	"math/rand"
+	"bufio"
 )
 
 // TODO - struct for session ID
@@ -165,7 +166,7 @@ func signupHandler(w http.ResponseWriter, r *http.Request) {
 	<div>Username: <input type="text" name="userName"></div>
 	<div><input type="hidden" name="login" value="false"></div>
 	<div>Password: <input type="text" name="password"></div>
-	<div><input type="hidden" name="SessionID"></div>
+	<div><input type="hidden" name="SessionID" value="`+sessionID+`"></div>
 	<div><input type="submit"></div>
 	</form>
 	<div>Already have an account? <a href="/login">Log in</a>.</div>`
@@ -174,22 +175,54 @@ func signupHandler(w http.ResponseWriter, r *http.Request) {
 
 func accountCheckHandler(w http.ResponseWriter, r *http.Request) {
 	f, err := nil, nil
+	count := 0
 	newSession := nil
 	options := os.O_CREATE | os.O_APPEND
+	var scanner *bufio.Scanner = nil
+	loggedIn := false
+	newAccount := true
+	
 	if r.FormValue("login") == "true" {
 		options = os.O_RDONLY
 		f, err = os.OpenFile("accounts.txt", options, os.FileMode(0600))
 		if err != nil {
 			log.Fatal(err)
+			fmt.Fprintf(w, `<h1></h1>`)
+		} else {
+			scanner = bufio.NewScanner(f)
+			for scanner.Scan() {
+				if scanner.Text().contains(r.FormValue("userName")) 
+				&& scanner.Text().contains(r.FormValue("password")) {
+					loggedIn = true
+				}
+			}
 		}
-		
 	} else {
 		f, err = os.OpenFile("accounts.txt", options, os.FileMode(0600))
 		if err != nil {
 			log.Fatal(err)
 		}
+		scanner = bufio.NewScanner(f)
+		for scanner.Scan() {
+			if scanner.Text().contains(r.FormValue("userName")) || scanner.Text().contains(r.FormValue("password")) {
+				newAccount = false
+			}
+		}
+		if newAccount {
+			fmt.Fprintln(f, "Username:"+r.FormValue("userName")+" Password:"+r.FormValue("password"))
+			f.close()
+			http.Redirect(w, r, "localhost:8000/blog", http.StatusSeeOther)
+		} else {
+			fmt.Fprintf(w, `<div>Sorry, but that account username or password already exists.</div>
+			<div><a href="localhost:8000/signup">Back to Sign Up</a></div>
+			<div>Already have an account? <a href="localhost:8000/login">Log in here</a>.</div>`)
+		}
 	}
 	f.close()
+	
+	if loggedIn {
+		http.Redirect(w, r, "localhost:8000/blog", http.StatusSeeOther)
+	}
 }
 
 const blogTemplate = `<head>
