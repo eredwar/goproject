@@ -177,13 +177,17 @@ func accountCheckHandler(w http.ResponseWriter, r *http.Request) {
 	newSession := nil
 	options := os.O_CREATE | os.O_APPEND
 	if r.FormValue("login") == "true" {
+		options = os.O_RDONLY
 		f, err = os.OpenFile("accounts.txt", options, os.FileMode(0600))
 		if err != nil {
 			log.Fatal(err)
 		}
 		
 	} else {
-		
+		f, err = os.OpenFile("accounts.txt", options, os.FileMode(0600))
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 	f.close()
 }
