@@ -279,7 +279,7 @@ const blogTemplate = `<head>
 </tr>
 {{range .}}
 <tr>
-  <td><a href='http://localhost:8000/recipe?id={{.ID}}'>{{.Title}}</td>
+  <td><a href='http://localhost:8000/recipe?id={{.ID}}'>{{.Title}}</a></td>
   <td>{{.Author}}</td>
   <td>{{.Date}}</td>
   <td><button type="button" onclick="updateCart({{.ID}})">Add to Grochery List</button></td>
@@ -406,10 +406,18 @@ func resultHandler(w http.ResponseWriter, r *http.Request) {
 
 // Search handler to list the recipe handlers.
 func searchHandler(w http.ResponseWriter, r *http.Request) {
-	htmlForm := `<h1>Search for a Recipe</h1>
-	<form>
-	<div>Title: <input type="text" name="title"></div>
-	</form>`
+	valuesMap, err := url.ParseQuery(r.URL.RawQuery)
+	if err != nil {
+		log.Fatal(err)
+	}
+	counter := 0
+	recs = make([]string)
+	for _, val := range valuesMap {
+		if valuesMap[val].contains(recipes[counter]) {
+			
+		}
+		counter++
+	}
 }
 
 /*
