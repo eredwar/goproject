@@ -407,9 +407,7 @@ func resultHandler(w http.ResponseWriter, r *http.Request) {
 // Search handler to list the recipe handlers.
 func searchHandler(w http.ResponseWriter, r *http.Request) {
 	valuesMap, err := url.ParseQuery(r.URL.RawQuery)
-	if err != nil {
-		log.Fatal(err)
-	}
+	checkError(err)
 	counter := 0
 	recs = make([]string)
 	for _, val := range valuesMap {
@@ -418,14 +416,25 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		counter++
 	}
+	fmt.Fprintf(w, "")
 }
 
 /*
 // Save handler for saving
-shoppingTemplate := `<h1>Shopping Page for Reipes</h1>`
+shoppingTemplate := `<h1>Shopping Page for Reipes</h1>
+<form action="/search" method="POST">
+	<div>Title: <input type="text" name="title"></div>
+	<div>Author: <input type="text" name="author"></div>
+	<div>Date: <input type="text" name="date"></div>
+	<div><input type="submit"></div>
+</form>`
 
 func shoppingListHandler(w http.ResponseWriter, r *http.Request) {
 	shoppingPage, err := template.New("shoppingPage").Parse(shoppingTemplate)
+	if err != nil {
+		log.Fatal(err)
+	}
+	http.Execute()
 }
 */
 
