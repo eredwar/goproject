@@ -51,6 +51,23 @@ var recipes = []Recipe{
 	{Title: "Torta", Author: "David Bowie", Date: "11/4/2022", ID: "1",
 		Ingredients:  []Ingredient{{"Bread", "1 slice"}, {"Meat", "Enough"}, {"A rock", "1 whole"}},
 		Instructions: []string{"Walk 10 feet", "Turn right"}},
+	{Title: "Best Hamburger Patty Recipe", Author: "Sommer Colier", Date: "6/15/2022", ID: "2",
+	 Ingredients: []Ingredient{{"Ground chuck", "2 pounds"}, {"Crushed saltine crackers", "1/2 cup"}, {"Large egg", "1"}, 
+				   {"Worcestershire sauce", "2 tablespoons"}, {"Milk", "2 tablespoons"}, {"Salt", "1 teaspoon"},
+				   {"Garlic powder", "1 teaspoon"}, {"Onion powder", "1 teaspoon"}, {"Black pepper", "1/2 teaspoon"}},
+	 Instructions: []string{"1. Set out a large mixing bowl. Add in the ground beef, crushed crackers, egg, Worcestershire sauce, "+
+				"milk, salt, garlic powder, onion powder, and pepper. Mix by hand until the meat mixture is smooth, "+
+				"but stop once the mixture looks even. (Overmixing can create a dense heavy texture.)", "2. Press the "+
+				"meat down in the bowl, into an even disk. Use a knife to cut and divide the hamburger patty mixture "+
+				"into 6 – 1/3 pound grill or skillet patties, or 12 thin griddle patties.", "3. Set out a baking sheet, "+
+				"lined with wax paper or foil, to hold the patties. One at a time, gather the patty mix and press firmly "+
+				"into patties. Shape them just slightly larger than the buns you plan to use, to account for shrinkage "+
+				"during cooking. Set the patties on the baking sheet. Use a spoon to press a dent in the center of each patty "+
+				"so they don't puff up as they cook. If you need to stack the patties separate them with a sheet of wax paper.",
+			        "4. Preheat the grill or a skillet to medium heat. (Approximately 350-400 degrees F.)", 
+				"5. For thick patties: Grill or fry the patties for 3-4 minutes per side.",
+			        "6. For thin patties: Cook on the griddle for 2 minutes per side.",
+			        "7. Stack the hot patties on hamburgers buns, and top with your favorite hamburgers toppings. Serve warm."}}
 }
 
 // test shopping recipes
@@ -192,7 +209,8 @@ func accountCheckHandler(w http.ResponseWriter, r *http.Request) {
 		f, err = os.OpenFile("accounts.txt", options, os.FileMode(0600))
 		if err != nil {
 			log.Fatal(err)
-			fmt.Fprintf(w, `<h1></h1>`)
+			fmt.Fprintf(w, `<h1>Error: This site has 0 accounts.</h1>
+			<div><a href="localhost:8000/login">Sign up for this account</a></div>`)
 		} else {
 			scanner = bufio.NewScanner(f)
 			for scanner.Scan() {
@@ -218,8 +236,9 @@ func accountCheckHandler(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintln(f, "Username:"+r.FormValue("userName")+" Password:"+r.FormValue("password"))
 			f.close()
 			serverUser.User = r.FormValue("userName")
-			serverUser.ID = r.FormValue("password")
-			serverUser.
+			serverUser.ID = r.FormValue("sessionID")
+			serverUser.Password = r.FormValue("password")
+			serverUser.SessionURL = r.URL.Path
 			http.Redirect(w, r, "localhost:8000/blog", http.StatusSeeOther)
 		} else {
 			fmt.Fprintf(w, `<div>Sorry, but that account username or password already exists.</div>
@@ -232,13 +251,14 @@ func accountCheckHandler(w http.ResponseWriter, r *http.Request) {
 		serverUser.ID = r.FormValue("sessionID")
 		serverUser.Password = r.FormValue("password")
 		serverUser.SessionURL = r.URL.Path
-		file, err = os.Open("recipes.txt") 
+		serverUser.List = recipes
+		options = os.O_CREATE | os.O_APPEND
+		file, err = os.OpenFile("recipes.txt", options, os.FileMode(0600)) 
 		if err != nil {
 			log.Fatal(err)
 		}
-		scanner = bufio.NewScanner(file)
-		for scanner.Scan() {
-			serverUser.List = append(serverUser.List, Recipe{strings.Fields(scanner.Text())})
+		for i := 0; i < len(recipes); i++ {
+			fmt.Fprintln(file, recipes[i])
 		}
 		file.close()
 		http.Redirect(w, r, "localhost:8000/blog", http.StatusSeeOther)
@@ -384,15 +404,17 @@ func resultHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-/*
 // Search handler to list the recipe handlers.
 func searchHandler(w http.ResponseWriter, r *http.Request) {
-
+	htmlForm := `<h1>Search for a Recipe</h1>
+	<form>
+	<div>Title: <input type="text" name="title"></div>
+	</form>`
 }
 
+/*
 // Save handler for saving
-shoppingTemplate := `<h1>Shopping Page for Reipes</h1>
-`
+shoppingTemplate := `<h1>Shopping Page for Reipes</h1>`
 
 func shoppingListHandler(w http.ResponseWriter, r *http.Request) {
 	shoppingPage, err := template.New("shoppingPage").Parse(shoppingTemplate)
