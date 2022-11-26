@@ -70,7 +70,7 @@ var recipes = []Recipe{
 			        "7. Stack the hot patties on hamburgers buns, and top with your favorite hamburgers toppings. Serve warm."}}
 }
 
-// test shopping recipes
+// TODO:  make a decent sized list and test it for the shopping handler.
 /*
 var shoppingRecipes = []Recipe{
 	{Title: "Baked Feta", Author:},
@@ -411,8 +411,8 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 	counter := 0
 	recs = make([]string)
 	for _, val := range valuesMap {
-		if valuesMap[val].contains(recipes[counter]) {
-			
+		if strings.Contains(valuesMap[val], recipes[counter]) {
+			recs = append(recs, valuesMap[])
 		}
 		counter++
 	}
@@ -427,14 +427,23 @@ shoppingTemplate := `<h1>Shopping Page for Reipes</h1>
 	<div>Author: <input type="text" name="author"></div>
 	<div>Date: <input type="text" name="date"></div>
 	<div><input type="submit"></div>
-</form>`
+</form>
+<table>
+	<tr>
+		<th>Title</th>
+		<th>Author</th>
+		<th>Date</th>
+		<th>Add?</th>
+	</tr>
+	{{range .List}}
+	{{end}}
+</table>`
 
 func shoppingListHandler(w http.ResponseWriter, r *http.Request) {
 	shoppingPage, err := template.New("shoppingPage").Parse(shoppingTemplate)
-	if err != nil {
-		log.Fatal(err)
-	}
-	http.Execute()
+	checkError(err)
+	err = shoppingPage.Execute(w, shoppingRecipes)
+	checkError(err)
 }
 */
 
