@@ -196,8 +196,8 @@ func accountCheckHandler(w http.ResponseWriter, r *http.Request) {
 		} else {
 			scanner = bufio.NewScanner(f)
 			for scanner.Scan() {
-				if scanner.Text().contains(r.FormValue("userName")) 
-				&& scanner.Text().contains(r.FormValue("password")) {
+				if scanner.Text().contains(r.FormValue("userName")) &&
+				scanner.Text().contains(r.FormValue("password")) {
 					loggedIn = true
 				}
 			}
@@ -209,13 +209,17 @@ func accountCheckHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		scanner = bufio.NewScanner(f)
 		for scanner.Scan() {
-			if scanner.Text().contains(r.FormValue("userName")) || scanner.Text().contains(r.FormValue("password")) {
+			if scanner.Text().contains(r.FormValue("userName")) || 
+			scanner.Text().contains(r.FormValue("password")) {
 				newAccount = false
 			}
 		}
 		if newAccount {
 			fmt.Fprintln(f, "Username:"+r.FormValue("userName")+" Password:"+r.FormValue("password"))
 			f.close()
+			serverUser.User = r.FormValue("userName")
+			serverUser.ID = r.FormValue("password")
+			serverUser.
 			http.Redirect(w, r, "localhost:8000/blog", http.StatusSeeOther)
 		} else {
 			fmt.Fprintf(w, `<div>Sorry, but that account username or password already exists.</div>
@@ -234,7 +238,7 @@ func accountCheckHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		scanner = bufio.NewScanner(file)
 		for scanner.Scan() {
-			serverUser.List = append(serverUser.List, Recipe{scanner.Text()})
+			serverUser.List = append(serverUser.List, Recipe{strings.Fields(scanner.Text())})
 		}
 		file.close()
 		http.Redirect(w, r, "localhost:8000/blog", http.StatusSeeOther)
