@@ -40,13 +40,17 @@ function saveRetrieval(){
     
     if (title.value != "") {
         req = new XMLHttpRequest()
-        
-        return req
+        req.open("GET", "https://localhost:8000/blog?title="+title.value)
+        req.send()
+        return req.responseText
     } else if (ingredient.value != "") {
         req = new XMLHttpRequest()
-        
-        return req
+        req.open("GET", "https://localhost:8000/blog?ingredient="+ingredient.value)
+        req.send()
+        return req.responseText
     } else {
-        
+        var item = document.createTextNode("<div>Either fill out the title or ingredient field first.</div>")
+        var elem = document.createElement("p")
+        elem.appendChild(item)
     }
 }
