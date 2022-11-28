@@ -33,7 +33,7 @@ function addInstruction(){
     document.getElementById("instructionCount").value = instructionCount.toString();
 }
 
-function saveRetrieval(){
+function searchRetrieval(){
     var title = document.getElementById("title")
     var ingredient = document.getElementById("ingredient")
     var req = null
