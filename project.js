@@ -32,3 +32,21 @@ function addInstruction(){
     instructionCount++;
     document.getElementById("instructionCount").value = instructionCount.toString();
 }
+
+function saveRetrieval(){
+    var title = document.getElementById("title")
+    var ingredient = document.getElementById("ingredient")
+    var req = null
+    
+    if (title.value != "") {
+        req = new XMLHttpRequest()
+        
+        return req
+    } else if (ingredient.value != "") {
+        req = new XMLHttpRequest()
+        
+        return req
+    } else {
+        
+    }
+}
