@@ -406,26 +406,20 @@ func resultHandler(w http.ResponseWriter, r *http.Request) {
 
 // Search handler to list the recipe handlers.
 func searchHandler(w http.ResponseWriter, r *http.Request) {
-	valuesMap, err := url.ParseQuery(r.URL.RawQuery)
-	checkError(err)
-	counter := 0
-	recs = make([]string)
-	for _, val := range valuesMap {
-		if strings.Contains(valuesMap[val], recipes[counter]) {
-			recs = append(recs, valuesMap[])
-		}
-		counter++
-	}
-	fmt.Fprintf(w, "")
+	htmlForm = `<h1>Search for a recipe in the Blog Page</h1>
+		    <form>
+		    	<div>Title:      <input type="text" id="title"></div>
+			<div>Ingredient: <input type="text" id="ingredient"></div>
+			<div><button type="button" onclick="searchRetrieval()">Search</button></div>
+		    </form>`
+	fmt.Fprintf(w, htmlForm)
 }
 
 /*
 // Save handler for saving
 shoppingTemplate := `<h1>Shopping Page for Reipes</h1>
 <form action="/search" method="POST">
-	<div>Title: <input type="text" name="title"></div>
-	<div>Author: <input type="text" name="author"></div>
-	<div>Date: <input type="text" name="date"></div>
+	<div><input type="hidden" name="sessionID"></div>
 	<div><input type="submit"></div>
 </form>
 <table>
