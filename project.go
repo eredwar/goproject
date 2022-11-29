@@ -43,6 +43,9 @@ type Ingredient struct {
 	Quantity string
 }
 
+// shopping list variable to append to
+var shopList []Recipe = make([]Recipe)
+
 // test recipes
 var recipes = []Recipe{
 	{Title: "Pizza Pie", Author: "Poco", Date: "11/4/2022", ID: "0",
@@ -69,12 +72,6 @@ var recipes = []Recipe{
 			        "6. For thin patties: Cook on the griddle for 2 minutes per side.",
 			        "7. Stack the hot patties on hamburgers buns, and top with your favorite hamburgers toppings. Serve warm."}}
 }
-
-// TODO:  make a decent sized list and test it for the shopping handler.
-/*
-var shoppingRecipes = []Recipe{
-	{Title: "Baked Feta", Author:},
-}*/
 
 // create a variable that holds the session ID
 var serverUser *SessionID = &SessionID{User: "None", ID: "00000", Password: "********", 
