@@ -414,21 +414,25 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 
 /*
 // Save handler for saving
-shoppingTemplate := `<h1>Shopping Page for Reipes</h1>
+shoppingTemplate := `<head>
+<script type="text/javascript" src="localhost:8000/js"></script>
+</head>
+<h1>Shopping Page for Reipes</h1>
 <form action="/search" method="POST">
 	<div><input type="hidden" name="sessionID"></div>
-	<div><input type="submit"></div>
+	<div><input type="submit" value="Search"></div>
 </form>
 <table>
 	<tr>
 		<th>Title</th>
 		<th>Author</th>
 		<th>Date</th>
-		<th>Add?</th>
 	</tr>
-	{{range .List}}
+	{{_, val := range .}}
 	<tr>
-		<td>{{.[]}}</td>
+		<td>{{.val.Title}}</td>
+		<td>{{.val.Author}}</td>
+		<td>{{.val.Date}}</td>
 	</tr>
 	{{end}}
 </table>`
@@ -436,7 +440,7 @@ shoppingTemplate := `<h1>Shopping Page for Reipes</h1>
 func shoppingListHandler(w http.ResponseWriter, r *http.Request) {
 	shoppingPage, err := template.New("shoppingPage").Parse(shoppingTemplate)
 	checkError(err)
-	err = shoppingPage.Execute(w, shoppingRecipes)
+	err = shoppingPage.Execute(w, shopList)
 	checkError(err)
 }
 */
