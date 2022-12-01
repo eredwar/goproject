@@ -427,6 +427,9 @@ shoppingTemplate := `<h1>Shopping Page for Reipes</h1>
 		<th>Add?</th>
 	</tr>
 	{{range .List}}
+	<tr>
+		<td>{{.[]}}</td>
+	</tr>
 	{{end}}
 </table>`
 
