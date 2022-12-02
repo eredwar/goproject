@@ -11,3 +11,8 @@
 .\project.go:215:20: scanner.Text().contains undefined (type string has no field or method contains)
 .\project.go:225:13: cannot use bufio.NewScanner(f) (value of type *bufio.Scanner) as type bufio.Scanner in assignment
 .\project.go:225:13: too many errors
+
+// Test 2: 12/2/2022
+.\project.go:47:25: syntax error: unexpected {, expecting expression
+.\project.go:48:20: syntax error: unexpected ] after top level declaration
+.\project.go:89:120: syntax error: unexpected newline in composite literal; possibly missing comma or }
