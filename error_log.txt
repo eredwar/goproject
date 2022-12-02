@@ -12,16 +12,33 @@
 .\project.go:225:13: cannot use bufio.NewScanner(f) (value of type *bufio.Scanner) as type bufio.Scanner in assignment
 .\project.go:225:13: too many errors
 
-// Test 2: 12/2/2022 - 10:30 AM (EST)
+// Test Wave 2: 12/2/2022 - 10:30 AM (EST)
 .\project.go:47:25: syntax error: unexpected {, expecting expression
 .\project.go:48:20: syntax error: unexpected ] after top level declaration
 .\project.go:89:120: syntax error: unexpected newline in composite literal; possibly missing comma or }
 
-// Test 3: 12/2/2022 - 11:09 AM (EST)
+// Test Wave 3: 12/2/2022 - 11:09 AM (EST)
 .\project.go:55:10: syntax error: unexpected : after top level declaration
 .\project.go:89:121: syntax error: unexpected newline in composite literal; possibly missing comma or }
 
-// Test 4: 12/2/2022 - 11:30 AM (EST)
+// Test Wave 4: 12/2/2022 - 11:30 AM (EST)
 # command-line-arguments
 .\project.go:62:108: syntax error: unexpected newline in composite literal; possibly missing comma or }
 .\project.go:89:121: syntax error: unexpected newline in composite literal; possibly missing comma or }
+
+// Tests Wave 5: 12/2/2022 - 12:10 PM (EST) (Also we should add concurrency somewhere in the program to make it look good for the professor.)
+# command-line-arguments
+.\project.go:89:121: syntax error: unexpected newline in composite literal; possibly missing comma or }
+
+# command-line-arguments
+.\project.go:50:74: cannot use 1 (untyped int constant) as string value in struct literal
+.\project.go:66:15: undefined: recipe
+.\project.go:94:37: invalid operation: make([]Recipe) expects 2 or 3 arguments; found 1
+.\project.go:211:12: use of untyped nil in assignment
+.\project.go:212:10: use of untyped nil in assignment
+.\project.go:214:16: use of untyped nil in assignment
+.\project.go:216:30: cannot use nil as bufio.Scanner value in variable declaration
+.\project.go:228:14: cannot use bufio.NewScanner(f) (value of type *bufio.Scanner) as type bufio.Scanner in assignment
+.\project.go:230:23: scanner.Text().contains undefined (type string has no field or method contains)
+.\project.go:231:20: scanner.Text().contains undefined (type string has no field or method contains)
+.\project.go:231:20: too many errors
