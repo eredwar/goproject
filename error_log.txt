@@ -42,3 +42,15 @@
 .\project.go:230:23: scanner.Text().contains undefined (type string has no field or method contains)
 .\project.go:231:20: scanner.Text().contains undefined (type string has no field or method contains)
 .\project.go:231:20: too many errors
+
+# command-line-arguments
+.\project.go:211:26: cannot convert nil to type SessionID
+.\project.go:213:46: cannot convert nil to type bufio.Scanner
+.\project.go:227:23: scanner.Text().contains undefined (type string has no field or method contains)
+.\project.go:228:20: scanner.Text().contains undefined (type string has no field or method contains)
+.\project.go:240:22: scanner.Text().contains undefined (type string has no field or method contains)
+.\project.go:241:19: scanner.Text().contains undefined (type string has no field or method contains)
+.\project.go:247:6: f.close undefined (type *os.File has no field or method close, but does have Close)
+.\project.go:273:8: file.close undefined (type *os.File has no field or method close, but does have Close)
+.\project.go:276:2: undefined: f
+.\project.go:419:2: undefined: htmlForm
