@@ -1,0 +1,13 @@
+// Project Recipizer: Error Log
+.\project.go:73:120: syntax error: unexpected newline in composite literal; possibly missing comma or }
+.\project.go:47:25: invalid operation: make([]Recipe) expects 2 or 3 arguments; found 1
+.\project.go:78:37: invalid operation: make([]Recipe) expects 2 or 3 arguments; found 1
+.\project.go:195:12: use of untyped nil in assignment
+.\project.go:196:10: use of untyped nil in assignment
+.\project.go:198:16: use of untyped nil in assignment
+.\project.go:200:30: cannot use nil as bufio.Scanner value in variable declaration
+.\project.go:212:14: cannot use bufio.NewScanner(f) (value of type *bufio.Scanner) as type bufio.Scanner in assignment
+.\project.go:214:23: scanner.Text().contains undefined (type string has no field or method contains)
+.\project.go:215:20: scanner.Text().contains undefined (type string has no field or method contains)
+.\project.go:225:13: cannot use bufio.NewScanner(f) (value of type *bufio.Scanner) as type bufio.Scanner in assignment
+.\project.go:225:13: too many errors
