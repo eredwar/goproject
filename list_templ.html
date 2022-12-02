@@ -1,0 +1,9 @@
+    <a href="http://localhost:8000/blog">-Return to Blog-</a>    
+    <ul>
+    {{range .}}
+    <p>{{.Title}}</p>
+    {{range .Ingredients}}
+    <li>{{.Name}} -- {{.Quantity}}</li>
+    {{end}}
+    {{end}}
+    </ul>

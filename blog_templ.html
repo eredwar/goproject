@@ -1,0 +1,22 @@
+<head>
+    <script type="text/javascript" src="http://localhost:8000/js">
+    </script></head>
+    <h1>Recipes</h1>
+    <a href="http://localhost:8000/upload">-Upload a Recipe-</a>
+    <a href="http://localhost:8000/shoppinglist">-View Shopping List-</a>
+    <a href="http://localhost:8000/search">-Search for Recipes-</a>
+    <table>
+    <tr style='text-align: left'>
+      <th>Recipe</th>
+      <th>Author</th>
+      <th>Submitted On</th>
+    </tr>
+    {{range .}}
+    <tr>
+      <td><a href='http://localhost:8000/recipe?id={{.ID}}'>{{.Title}}</a></td>
+      <td>{{.Author}}</td>
+      <td>{{.Date}}</td>
+      <td><button type="button" onclick="updateCart({{.ID}})">Add to Grochery List</button></td>
+    </tr>
+    {{end}}
+    </table>

@@ -1,0 +1,20 @@
+<head>
+    <title>{{.Title}}</title>
+    <script type="text/javascript" src="http://localhost:8000/js">
+    </script></head>
+    <h1>{{.Title}}</h1>
+    <p>Submitted by {{.Author}} on {{.Date}}.</p>
+    <a href="http://localhost:8000/blog">-Return to Blog-</a>
+    <a href="http://localhost:8000/shoppinglist">-View Shopping List-</a>
+    <button type="button" onclick="updateCart({{.ID}})">Add to Grochery List</button>
+    <ul>
+    {{range .Ingredients}}
+    <li>{{.Name}} -- {{.Quantity}}</li>
+    {{end}}
+    <p>Add Ingredients to Shopping List</p>
+    </ul>
+    <ol>
+    {{range .Instructions}}
+    <li>{{.}}</li>
+    {{end}}
+    </ol>`

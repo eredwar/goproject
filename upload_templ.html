@@ -1,0 +1,17 @@
+<head>
+	<script type="text/javascript" src="http://localhost:8000/js">
+	</script></head>
+	<h1>Recipe Upload</h1>
+		<form action="/upload/result" method="POST">
+			<div>Title<input type="text" name="title"></div>
+			<div>Ingredient<input type="text" name="ingredient[0]"></div>
+			<div>Quantity<input type="text" name="quantity[0]"></div>
+			<div id="ingredientList"/></div>
+			<button type="button" onclick="addIngredient()">Add Ingredient</button>
+			<div>Instruction<input type="text" name="instruction[0]"></div>
+			<div id="instructionList"/></div>
+			<button type="button" onclick="addInstruction()">Add Instruction</button>
+			<div><input type="submit"></div>
+			<input type="hidden" id="ingredientCount" name="ingredientCount" value="1">
+			<input type="hidden" id="instructionCount" name="instructionCount" value="1">
+		</form>
