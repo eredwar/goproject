@@ -44,7 +44,23 @@ type Ingredient struct {
 }
 
 // shopping list variable to append to
-var shopList []Recipe = make([]Recipe)
+var shopList []Recipe = {{Title: "Kiwi Cake", Author: "Yummy[Youtube]", Date: "10/20/2021",
+			  Ingredients: []Ingredient{{"kiwis", "2"}, {"eggs", "2"}, {"Cups of sugar", "2/3"}, {"Cups of oil", "1/3"},
+						    {"Cup of all-pourpose flour", "1"}, {"Teaspoon of baking powder", "1"}, {"Teaspoon of baking soda", 1},
+						    {"Teaspoons of vanilla", "2"}, {"Green food coloring", "1"}, {"Inches of mould", "6"}, {"Brush oil", "1"},
+						    {"Baking paper", "1"}},
+			  Instructions: []string{"Blend until smooth", "Place baking paper", "Put Kiwi on top", 
+						 "Place a stand & heat the pan for 5 mins on medium flame", "After 5 mins place the mould", 
+						 "Cook it on low flame for 30-40 mins", "Or bake in a preheated oven at 160c for 30-40 mins"}},
+			 Title: "Old Delhi-style butter chicken", Author: "Vivek Singh", Date: "12/1/2022", 
+			 Ingredients: []Ingredient{{"Grams of boneless and skinless chicken", "800"}, {"Bowl of coriander leaves", "1"}, 
+						   {"Finely-sliced red onion", "1"}, {"Sliced green or red chili", "1"}, 
+						   {"Naan bread or a bowl of basmati rice", "1"}, {"Jar of chutney", "1"}, {"Grams of Greek yogurt", "120"}, 
+						   {"Thumb-sized piece of grated ginger", "1"}, {"Crushed garlic cloves", "4-5"}, 
+						   {"Tablespoon of vegetable or coconut oil", "1"}, {"Juiced lemon", "1"}, {"Teaspoons of mild chili powder", "3"},
+						   {"Teaspoon of ground cumin", "1"}, {"Teaspoon of garam masala", "1/2"}, {"Teaspoon of turmeric", "1/2"},
+						   {"Kilogram of ripe vine or plum tomatoes", "1"}},
+			 Instructions: []string{"Dice the tomotatoes", "Preheat ove to 375 degrees F.", "Prepare the marinade"}}
 
 // test recipes
 var recipes = []Recipe{
@@ -70,7 +86,7 @@ var recipes = []Recipe{
 			        "4. Preheat the grill or a skillet to medium heat. (Approximately 350-400 degrees F.)", 
 				"5. For thick patties: Grill or fry the patties for 3-4 minutes per side.",
 			        "6. For thin patties: Cook on the griddle for 2 minutes per side.",
-			        "7. Stack the hot patties on hamburgers buns, and top with your favorite hamburgers toppings. Serve warm."}}
+			        "7. Stack the hot patties on hamburgers buns, and top with your favorite hamburgers toppings. Serve warm."}},
 }
 
 // create a variable that holds the session ID
