@@ -85,12 +85,16 @@ type RecipeSlice struct {
 }
 
 // access functions for RecipeSlice
-func (r *RecipeSlice) Lookup(id string) Recipe {
+func (r *RecipeSlice) Lookup(id string) (Recipe, error) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	index, err := strconv.Atoi(id)
-	checkError(err)
-	return *r.Recipes[index]
+	if err != nil {
+		return Recipe{}, errors.New("Recipe ID format invalid.")
+	} else if index < 0 || index >= len(r.Recipes) {
+		return Recipe{}, errors.New("Recipe ID out of bounds.")
+	}
+	return *r.Recipes[index], nil
 }
 
 // adds given Recipe to RecipeSlice with ID equal to its index
@@ -238,7 +242,11 @@ func recipeHandler(w http.ResponseWriter, r *http.Request) {
 	valuesMap, err := url.ParseQuery(r.URL.RawQuery)
 	checkError(err)
 
-	item := recipes.Lookup(valuesMap["id"][0]) // recipe lookup
+	item, err := recipes.Lookup(valuesMap["id"][0]) // recipe lookup
+	if err != nil {
+		fmt.Fprintf(w, `Error: Recipe has invalid ID`)
+		return
+	}
 	// this fixed a problem where the HTML was being
 	// interpreted as plain text
 	w.Header().Set("Content-Type", "text/html")
@@ -396,6 +404,15 @@ func blogHandler(w http.ResponseWriter, r *http.Request) {
 
 // serves static upload page to /upload
 func uploadHandler(w http.ResponseWriter, r *http.Request) {
+
+	// user lookup
+	_, err := r.Cookie("GoRecipeBlog_sessionid")
+	// redirect to /login if no session
+	if err != nil {
+		http.Redirect(w, r, "http://localhost:8000/login", http.StatusSeeOther)
+		return
+	}
+
 	http.ServeFile(w, r, "upload_templ.html")
 }
 
@@ -468,7 +485,11 @@ func shoppingListHandler(w http.ResponseWriter, r *http.Request) {
 
 	// user lookup
 	cookie, err := r.Cookie("GoRecipeBlog_sessionid")
-	checkError(err)
+	// redirect to /login if no session
+	if err != nil {
+		http.Redirect(w, r, "http://localhost:8000/login", http.StatusSeeOther)
+		return
+	}
 	user := users.Lookup(cookie.Value)
 
 	// check that user has recipes in cart, if not serve error page
@@ -480,7 +501,12 @@ func shoppingListHandler(w http.ResponseWriter, r *http.Request) {
 	// get the recipes
 	var items []Recipe
 	for i := 0; i < len(user.ShoppingList); i++ {
-		items = append(items, recipes.Lookup(user.ShoppingList[i]))
+		recipe, err := recipes.Lookup(user.ShoppingList[i])
+		if err != nil {
+			fmt.Fprintf(w, `<h1>Error: Invalid ID in Shopping Cart</h1>`)
+			return
+		}
+		items = append(items, recipe)
 	}
 
 	// serve page
