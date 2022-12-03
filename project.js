@@ -39,8 +39,6 @@ function addInstruction() {
 
 // --------- SEARCH PAGE FUNCTIONALITY -----------------
 
-var searchCount = 0;
-
 function addSearchTerm() {
     var ingredientList = document.getElementById("ingredientList");
     var ingredient = document.createElement("input");
