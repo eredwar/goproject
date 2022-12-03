@@ -1,11 +1,18 @@
 <head>
     <script type="text/javascript" src="http://localhost:8000/js">
-    </script></head>
-    <h1>Recipes</h1>
-    <a href="http://localhost:8000/upload">-Upload a Recipe-</a>
-    <a href="http://localhost:8000/shoppinglist">-View Shopping List-</a>
-    <a href="http://localhost:8000/search">-Search for Recipes-</a>
-    <table>
+    </script>
+    <link rel="stylesheet" href="http://localhost:8000/blog.css">
+    <hr>
+    <h1>Recipes</h1> 
+    <hr> 
+  </head>
+  <body>
+  <div id="buttons">
+    <a id="site_function" href="http://localhost:8000/upload">Upload a Recipe</a>
+    <a id="site_function" href="http://localhost:8000/shoppinglist">View Shopping List</a>
+    <a id="site_function" href="http://localhost:8000/search">Search for Recipes</a>
+    </div>
+    <table id="recipes">
     <tr style='text-align: left'>
       <th>Recipe</th>
       <th>Author</th>
@@ -20,3 +27,4 @@
     </tr>
     {{end}}
     </table>
+  </body>

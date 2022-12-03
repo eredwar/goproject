@@ -19,7 +19,7 @@ import (
 )
 
 // TODO - struct for session ID
-type SessionID struct {
+type Session struct {
 	User         string
 	ID           string
 	ShoppingList []string
@@ -41,31 +41,34 @@ type Ingredient struct {
 	Quantity string
 }
 
-// Map of session IDs to sessions, safe for concurrent use
+// map of session IDs to sessions, safe for concurrent use
 type SessionMap struct {
 	mu       sync.Mutex
-	Sessions map[string]*SessionID
+	Sessions map[string]*Session
 }
 
-// access functions for SessionMap
-func (s *SessionMap) Lookup(id string) SessionID {
+// looks up Session in SessionMap with ID id, and returns a copy of it
+func (s *SessionMap) Lookup(id string) Session {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	return *s.Sessions[id]
 }
 
-func (s *SessionMap) AddSession(user *SessionID) {
+// adds a Session to SessionMap with key id
+func (s *SessionMap) AddSession(user *Session) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.Sessions[user.ID] = user
 }
 
+// removes a Session from SessionMap with key id
 func (s *SessionMap) RemoveSession(id string) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	delete(s.Sessions, id)
 }
 
+// finds Session
 func (s *SessionMap) UpdateSessionCart(id string, recipeID string) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -73,7 +76,7 @@ func (s *SessionMap) UpdateSessionCart(id string, recipeID string) {
 	user.ShoppingList = append(user.ShoppingList, recipeID)
 }
 
-var users = SessionMap{Sessions: make(map[string]*SessionID)}
+var users = SessionMap{Sessions: make(map[string]*Session)}
 
 // Slice of Recipe, safe for concurrent use
 type RecipeSlice struct {
@@ -105,12 +108,19 @@ func (r *RecipeSlice) SearchRecipe(title string, ingredients []string) []Recipe 
 	defer r.mu.Unlock()
 
 	var search []Recipe
+
+	// iterate through r.Recipes, if the Recipe is valid, it is appended to search
+	// if at any point it is invalid, it breaks and moves onto the next recipe
 	for _, item := range r.Recipes {
 		valid := false
+
 		if strings.Contains(
+			// first check Recipe to see it its Title contains title as a substring (case insensitive)
 			strings.ToLower(item.Title),
-			strings.ToLower(title), // search is case insensitive
+			strings.ToLower(title),
 		) {
+			// if the title is valid, check if the each ingredient in ingredients
+			// is in the Recipes map of ingredients (case insensitive)
 			valid = true
 			for _, ingredient := range ingredients {
 				if _, ok := item.Ingredients[ingredient]; !ok {
@@ -129,40 +139,13 @@ func (r *RecipeSlice) SearchRecipe(title string, ingredients []string) []Recipe 
 
 var recipes = RecipeSlice{Recipes: make([]*Recipe, 0)}
 
-/* test recipes
-var recipes = []Recipe{
-	{Title: "Pizza Pie", Author: "Poco", Date: "11/4/2022", ID: "0",
-		Ingredients:  []Ingredient{{"Dough", "10 grams"}, {"Sauce", "5 grams"}, {"Cheese", "1 cup"}},
-		Instructions: []string{"Add the ingredients together", "Cook"}},
-	{Title: "Torta", Author: "David Bowie", Date: "11/4/2022", ID: "1",
-		Ingredients:  []Ingredient{{"Bread", "1 slice"}, {"Meat", "Enough"}, {"A rock", "1 whole"}},
-		Instructions: []string{"Walk 10 feet", "Turn right"}},
-	{Title: "Best Hamburger Patty Recipe", Author: "Sommer Colier", Date: "6/15/2022", ID: "2",
-		Ingredients: []Ingredient{{"Ground chuck", "2 pounds"}, {"Crushed saltine crackers", "1/2 cup"}, {"Large egg", "1"},
-			{"Worcestershire sauce", "2 tablespoons"}, {"Milk", "2 tablespoons"}, {"Salt", "1 teaspoon"},
-			{"Garlic powder", "1 teaspoon"}, {"Onion powder", "1 teaspoon"}, {"Black pepper", "1/2 teaspoon"}},
-		Instructions: []string{"1. Set out a large mixing bowl. Add in the ground beef, crushed crackers, egg, Worcestershire sauce, " +
-			"milk, salt, garlic powder, onion powder, and pepper. Mix by hand until the meat mixture is smooth, " +
-			"but stop once the mixture looks even. (Overmixing can create a dense heavy texture.)", "2. Press the " +
-			"meat down in the bowl, into an even disk. Use a knife to cut and divide the hamburger patty mixture " +
-			"into 6 – 1/3 pound grill or skillet patties, or 12 thin griddle patties.", "3. Set out a baking sheet, " +
-			"lined with wax paper or foil, to hold the patties. One at a time, gather the patty mix and press firmly " +
-			"into patties. Shape them just slightly larger than the buns you plan to use, to account for shrinkage " +
-			"during cooking. Set the patties on the baking sheet. Use a spoon to press a dent in the center of each patty " +
-			"so they don't puff up as they cook. If you need to stack the patties separate them with a sheet of wax paper.",
-			"4. Preheat the grill or a skillet to medium heat. (Approximately 350-400 degrees F.)",
-			"5. For thick patties: Grill or fry the patties for 3-4 minutes per side.",
-			"6. For thin patties: Cook on the griddle for 2 minutes per side.",
-			"7. Stack the hot patties on hamburgers buns, and top with your favorite hamburgers toppings. Serve warm."}},
-}
-*/
 // create a variable that holds the session ID
-var serverUser *SessionID = &SessionID{User: "None", ID: "00000",
+var serverUser *Session = &Session{User: "None", ID: "00000",
 	ShoppingList: make([]string, 0)}
 
 func main() {
 
-	users.AddSession(&SessionID{User: "Charlie Edwards", ID: "42", ShoppingList: make([]string, 0)}) // test value for SessionMap
+	users.AddSession(&Session{User: "Charlie Edwards", ID: "42", ShoppingList: make([]string, 0)}) // test value for SessionMap
 	// load in recipes from recipes.json
 	file, err := os.Open("recipes.json")
 	if err != nil {
@@ -191,6 +174,7 @@ func main() {
 
 	// serves Javascript file
 	http.HandleFunc("/js", jsHandler)
+	http.HandleFunc("/blog.css", cssHandler)
 
 	// recipe upload / viewing
 	http.HandleFunc("/recipe", recipeHandler)
@@ -373,7 +357,8 @@ func signupHandler(w http.ResponseWriter, r *http.Request) {
 
 // http://localhost:8000/blog?title=pizza
 
-// Blog handler
+// serves a /blog page with a list of all Recipes in recipes. If query terms are in URL
+// it generates a /blog page with only Recipes that match the query
 func blogHandler(w http.ResponseWriter, r *http.Request) {
 	valuesMap, err := url.ParseQuery(r.URL.RawQuery)
 	checkError(err)
@@ -382,6 +367,7 @@ func blogHandler(w http.ResponseWriter, r *http.Request) {
 	blogPage, err := template.ParseFiles("blog_templ.html")
 	checkError(err)
 
+	// parse URL for search
 	title := ""
 	ingredients := make([]string, 0)
 	search := false
@@ -396,11 +382,13 @@ func blogHandler(w http.ResponseWriter, r *http.Request) {
 		search = true
 	}
 
+	// if the URL contained search terms, serve the specialized /blog page
 	if search {
 		results := recipes.SearchRecipe(title, ingredients)
 		err = blogPage.Execute(w, results)
 		checkError(err)
 	} else {
+		// otherwise serve the default /blog page
 		err = blogPage.Execute(w, recipes.Recipes)
 		checkError(err)
 	}
@@ -467,36 +455,10 @@ func resultHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// Search handler to list the recipe handlers.
+// serves static search page
 func searchHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "search_templ.html")
 }
-
-/*
-// Save handler for saving
-shoppingTemplate := `<head>
-<script type="text/javascript" src="localhost:8000/js"></script>
-</head>
-<h1>Shopping Page for Reipes</h1>
-<form action="/search" method="POST">
-	<div><input type="hidden" name="sessionID"></div>
-	<div><input type="submit" value="Search"></div>
-</form>
-<table>
-	<tr>
-		<th>Title</th>
-		<th>Author</th>
-		<th>Date</th>
-	</tr>
-	{{_, val := range .}}
-	<tr>
-		<td>{{.val.Title}}</td>
-		<td>{{.val.Author}}</td>
-		<td>{{.val.Date}}</td>
-	</tr>
-	{{end}}
-</table>`
-*/
 
 // on request, looks up the users shopping cart and serves a page containing all their
 // ingredients
@@ -509,23 +471,25 @@ func shoppingListHandler(w http.ResponseWriter, r *http.Request) {
 	checkError(err)
 	user := users.Lookup(cookie.Value)
 
-	// check that user has recipes in cart
+	// check that user has recipes in cart, if not serve error page
 	if len(user.ShoppingList) == 0 {
 		fmt.Fprintf(w, `<h1>No Items in Cart</h1>`)
 		return
 	}
 
+	// get the recipes
 	var items []Recipe
 	for i := 0; i < len(user.ShoppingList); i++ {
 		items = append(items, recipes.Lookup(user.ShoppingList[i]))
 	}
 
+	// serve page
 	err = shoppingPage.Execute(w, items)
 	checkError(err)
 }
 
 // on request, looks up the users session and adds the recipe ID in the url
-// their shopping list. Serves a page indicating success.
+// their shopping list. serves a page indicating success.
 func listUpdateHandler(w http.ResponseWriter, r *http.Request) {
 	valuesMap, err := url.ParseQuery(r.URL.RawQuery)
 	checkError(err)
@@ -540,7 +504,12 @@ func listUpdateHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, `<h1>Shopping Cart Updated</h1>`)
 }
 
-// sends 'project.js' on HTTP request
+// serves 'project.js' file
 func jsHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "project.js")
+}
+
+// serves 'blog.css' file
+func cssHandler(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "blog.css")
 }
