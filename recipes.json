@@ -1,141 +1,51 @@
 [
  {
-  "Title": "Pizza Pie",
+  "Title": "Pizza",
   "ID": "0",
-  "Author": "Poco",
-  "Date": "11/4/2022",
-  "Ingredients": [
-   {
+  "Author": "Charlie Edwards",
+  "Date": "12/02/2022",
+  "Ingredients": {
+   "cheese": {
+    "Name": "Cheese",
+    "Quantity": "1 Cup"
+   },
+   "dough": {
     "Name": "Dough",
-    "Quantity": "10 grams"
-   },
-   {
-    "Name": "Sauce",
-    "Quantity": "5 grams"
-   },
-   {
-    "Name": "Cheese",
-    "Quantity": "1 cup"
-   }
-  ],
-  "Instructions": [
-   "Add the ingredients together",
-   "Cook"
-  ]
- },
- {
-  "Title": "Torta",
-  "ID": "1",
-  "Author": "David Bowie",
-  "Date": "11/4/2022",
-  "Ingredients": [
-   {
-    "Name": "Bread",
-    "Quantity": "1 slice"
-   },
-   {
-    "Name": "Meat",
     "Quantity": "Enough"
-   },
-   {
-    "Name": "A rock",
-    "Quantity": "1 whole"
    }
-  ],
+  },
   "Instructions": [
-   "Walk 10 feet",
-   "Turn right"
+   "Make it"
   ]
  },
  {
-  "Title": "Best Hamburger Patty Recipe",
+  "Title": "Bread",
+  "ID": "1",
+  "Author": "Charlie Edwards",
+  "Date": "12/02/2022",
+  "Ingredients": {
+   "dough": {
+    "Name": "Dough",
+    "Quantity": "A lot"
+   }
+  },
+  "Instructions": [
+   "Make it"
+  ]
+ },
+ {
+  "Title": "pie",
   "ID": "2",
-  "Author": "Sommer Colier",
-  "Date": "6/15/2022",
-  "Ingredients": [
-   {
-    "Name": "Ground chuck",
-    "Quantity": "2 pounds"
-   },
-   {
-    "Name": "Crushed saltine crackers",
-    "Quantity": "1/2 cup"
-   },
-   {
-    "Name": "Large egg",
-    "Quantity": "1"
-   },
-   {
-    "Name": "Worcestershire sauce",
-    "Quantity": "2 tablespoons"
-   },
-   {
-    "Name": "Milk",
-    "Quantity": "2 tablespoons"
-   },
-   {
-    "Name": "Salt",
-    "Quantity": "1 teaspoon"
-   },
-   {
-    "Name": "Garlic powder",
-    "Quantity": "1 teaspoon"
-   },
-   {
-    "Name": "Onion powder",
-    "Quantity": "1 teaspoon"
-   },
-   {
-    "Name": "Black pepper",
-    "Quantity": "1/2 teaspoon"
-   }
-  ],
-  "Instructions": [
-   "1. Set out a large mixing bowl. Add in the ground beef, crushed crackers, egg, Worcestershire sauce, milk, salt, garlic powder, onion powder, and pepper. Mix by hand until the meat mixture is smooth, but stop once the mixture looks even. (Overmixing can create a dense heavy texture.)",
-   "2. Press the meat down in the bowl, into an even disk. Use a knife to cut and divide the hamburger patty mixture into 6 – 1/3 pound grill or skillet patties, or 12 thin griddle patties.",
-   "3. Set out a baking sheet, lined with wax paper or foil, to hold the patties. One at a time, gather the patty mix and press firmly into patties. Shape them just slightly larger than the buns you plan to use, to account for shrinkage during cooking. Set the patties on the baking sheet. Use a spoon to press a dent in the center of each patty so they don't puff up as they cook. If you need to stack the patties separate them with a sheet of wax paper.",
-   "4. Preheat the grill or a skillet to medium heat. (Approximately 350-400 degrees F.)",
-   "5. For thick patties: Grill or fry the patties for 3-4 minutes per side.",
-   "6. For thin patties: Cook on the griddle for 2 minutes per side.",
-   "7. Stack the hot patties on hamburgers buns, and top with your favorite hamburgers toppings. Serve warm."
-  ]
- },
- {
-  "Title": "Quesadilla",
-  "ID": "3",
-  "Author": "Jake Byler",
+  "Author": "Charlie Edwards",
   "Date": "12/02/2022",
-  "Ingredients": [
-   {
-    "Name": "Tortilla",
-    "Quantity": "1"
-   },
-   {
-    "Name": "Cheese",
-    "Quantity": "1/2 Cup"
+  "Ingredients": {
+   "dough": {
+    "Name": "DoUgh",
+    "Quantity": "dough"
    }
-  ],
+  },
   "Instructions": [
-   "Add and cook."
-  ]
- },
- {
-  "Title": "Water",
-  "ID": "4",
-  "Author": "Jake Byler",
-  "Date": "12/02/2022",
-  "Ingredients": [
-   {
-    "Name": "H",
-    "Quantity": "2"
-   },
-   {
-    "Name": "O",
-    "Quantity": "1"
-   }
-  ],
-  "Instructions": [
-   "Nuclear fusion"
+   "cook it"
   ]
  }
 ]

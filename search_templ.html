@@ -1,0 +1,10 @@
+<head>
+	<script type="text/javascript" src="http://localhost:8000/js">
+	</script></head>
+	<h1>Recipe Search</h1>
+			<div>Title<input type="text" name="title"/></div>
+			<div>Ingredient<input type="text" name="ingredient"/></div>
+			<div id="ingredientList"></div>
+			<button type="button" onclick="addSearchTerm()">Add Ingredient</button>
+            <button type="button" onclick="searchRetrieval()">Search</button>
+			<input type="hidden" id="searchCount" name="searchCount" value="0">

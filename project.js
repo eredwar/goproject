@@ -1,3 +1,5 @@
+// --------- CART FUNCTIONALITY -----------------
+
 function updateCart(id) {
     var req = new XMLHttpRequest();
     var item = "http://localhost:8000/shoppinglist/update?id=" + id;
@@ -6,9 +8,11 @@ function updateCart(id) {
     return req.responseText;
 }
 
+// --------- UPLOAD PAGE FUNCTIONALITY -----------------
+
 var ingredientCount = 1;
 
-function addIngredient(){
+function addIngredient() {
     var ingredientList = document.getElementById("ingredientList");
     var ingredient = document.createElement("input");
     ingredient.name = "ingredient[" + ingredientCount + "]";
@@ -23,7 +27,7 @@ function addIngredient(){
 
 var instructionCount = 1;
 
-function addInstruction(){
+function addInstruction() {
     var instructionList = document.getElementById("instructionList");
     var instruction = document.createElement("input");
     instruction.name = "instruction[" + instructionCount + "]";
@@ -33,24 +37,39 @@ function addInstruction(){
     document.getElementById("instructionCount").value = instructionCount.toString();
 }
 
-function searchRetrieval(){
-    var title = document.getElementById("title")
-    var ingredient = document.getElementById("ingredient")
-    var req = null
-    
+// --------- SEARCH PAGE FUNCTIONALITY -----------------
+
+var searchCount = 0;
+
+function addSearchTerm() {
+    var ingredientList = document.getElementById("ingredientList");
+    var ingredient = document.createElement("input");
+    ingredient.name = "ingredient";
+    ingredientList.appendChild(ingredient);
+    ingredientList.appendChild(document.createElement("br"));
+}
+
+function searchRetrieval() {
+    var title = document.getElementsByName("title")[0];
+    var ingredients = document.getElementsByName("ingredient");
+    var link = "http://localhost:8000/blog";
+    var firstTerm = true;
+
     if (title.value != "") {
-        req = new XMLHttpRequest()
-        req.open("GET", "https://localhost:8000/blog?title="+title.value)
-        req.send()
-        return req.responseText
-    } else if (ingredient.value != "") {
-        req = new XMLHttpRequest()
-        req.open("GET", "https://localhost:8000/blog?ingredient="+ingredient.value)
-        req.send()
-        return req.responseText
-    } else {
-        var item = document.createTextNode("<div>Either fill out the title or ingredient field first.</div>")
-        var elem = document.createElement("p")
-        elem.appendChild(item)
+        link += "?title=" + title.value;
+        firstTerm = false;
     }
+
+    for (var i = 0; i < ingredients.length; i++) {
+        if (ingredients[i].value != "") {
+            if (firstTerm) {
+                link += "?ingredient=" + ingredients[i].value;
+                firstTerm = false
+            }
+            else link += "&ingredient=" + ingredients[i].value;
+        } 
+    }
+
+    window.location.href = link;
+    return false;
 }

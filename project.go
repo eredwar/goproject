@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"html"
 	"html/template"
 	"io/ioutil"
 	"log"
@@ -32,7 +31,7 @@ type Recipe struct {
 	ID           string
 	Author       string
 	Date         string
-	Ingredients  []Ingredient
+	Ingredients  map[string]Ingredient
 	Instructions []string
 }
 
@@ -42,13 +41,13 @@ type Ingredient struct {
 	Quantity string
 }
 
-// Map of session IDs to sessions
+// Map of session IDs to sessions, safe for concurrent use
 type SessionMap struct {
 	mu       sync.Mutex
 	Sessions map[string]*SessionID
 }
 
-// concurrency safe access functions for SessionMap
+// access functions for SessionMap
 func (s *SessionMap) Lookup(id string) SessionID {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -76,27 +75,61 @@ func (s *SessionMap) UpdateSessionCart(id string, recipeID string) {
 
 var users = SessionMap{Sessions: make(map[string]*SessionID)}
 
-/*
-// shopping list variable to append to
-var shopList []Recipe = {{Title: "Kiwi Cake", Author: "Yummy[Youtube]", Date: "10/20/2021",
-			  Ingredients: []Ingredient{{"kiwis", "2"}, {"eggs", "2"}, {"Cups of sugar", "2/3"}, {"Cups of oil", "1/3"},
-						    {"Cup of all-pourpose flour", "1"}, {"Teaspoon of baking powder", "1"}, {"Teaspoon of baking soda", 1},
-						    {"Teaspoons of vanilla", "2"}, {"Green food coloring", "1"}, {"Inches of mould", "6"}, {"Brush oil", "1"},
-						    {"Baking paper", "1"}},
-			  Instructions: []string{"Blend until smooth", "Place baking paper", "Put Kiwi on top",
-						 "Place a stand & heat the pan for 5 mins on medium flame", "After 5 mins place the mould",
-						 "Cook it on low flame for 30-40 mins", "Or bake in a preheated oven at 160c for 30-40 mins"}},
-			 Title: "Old Delhi-style butter chicken", Author: "Vivek Singh", Date: "12/1/2022",
-			 Ingredients: []Ingredient{{"Grams of boneless and skinless chicken", "800"}, {"Bowl of coriander leaves", "1"},
-						   {"Finely-sliced red onion", "1"}, {"Sliced green or red chili", "1"},
-						   {"Naan bread or a bowl of basmati rice", "1"}, {"Jar of chutney", "1"}, {"Grams of Greek yogurt", "120"},
-						   {"Thumb-sized piece of grated ginger", "1"}, {"Crushed garlic cloves", "4-5"},
-						   {"Tablespoon of vegetable or coconut oil", "1"}, {"Juiced lemon", "1"}, {"Teaspoons of mild chili powder", "3"},
-						   {"Teaspoon of ground cumin", "1"}, {"Teaspoon of garam masala", "1/2"}, {"Teaspoon of turmeric", "1/2"},
-						   {"Kilogram of ripe vine or plum tomatoes", "1"}},
-			 Instructions: []string{"Dice the tomotatoes", "Preheat ove to 375 degrees F.", "Prepare the marinade"}}
-*/
-// test recipes
+// Slice of Recipe, safe for concurrent use
+type RecipeSlice struct {
+	mu      sync.Mutex
+	Recipes []*Recipe
+}
+
+// access functions for RecipeSlice
+func (r *RecipeSlice) Lookup(id string) Recipe {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	index, err := strconv.Atoi(id)
+	checkError(err)
+	return *r.Recipes[index]
+}
+
+// adds given Recipe to RecipeSlice with ID equal to its index
+func (r *RecipeSlice) AddRecipe(item Recipe) string {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	item.ID = strconv.Itoa(len(r.Recipes))
+	r.Recipes = append(r.Recipes, &item)
+	return item.ID
+}
+
+// returns a slice of Recipes in RecipeSlice with Title title and Ingredients ingredient
+func (r *RecipeSlice) SearchRecipe(title string, ingredients []string) []Recipe {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	var search []Recipe
+	for _, item := range r.Recipes {
+		valid := false
+		if strings.Contains(
+			strings.ToLower(item.Title),
+			strings.ToLower(title), // search is case insensitive
+		) {
+			valid = true
+			for _, ingredient := range ingredients {
+				if _, ok := item.Ingredients[ingredient]; !ok {
+					valid = false
+					break
+				}
+			}
+		}
+		if valid {
+			search = append(search, *item)
+		}
+	}
+
+	return search
+}
+
+var recipes = RecipeSlice{Recipes: make([]*Recipe, 0)}
+
+/* test recipes
 var recipes = []Recipe{
 	{Title: "Pizza Pie", Author: "Poco", Date: "11/4/2022", ID: "0",
 		Ingredients:  []Ingredient{{"Dough", "10 grams"}, {"Sauce", "5 grams"}, {"Cheese", "1 cup"}},
@@ -122,7 +155,7 @@ var recipes = []Recipe{
 			"6. For thin patties: Cook on the griddle for 2 minutes per side.",
 			"7. Stack the hot patties on hamburgers buns, and top with your favorite hamburgers toppings. Serve warm."}},
 }
-
+*/
 // create a variable that holds the session ID
 var serverUser *SessionID = &SessionID{User: "None", ID: "00000",
 	ShoppingList: make([]string, 0)}
@@ -137,25 +170,33 @@ func main() {
 	}
 	defer file.Close()
 	data, _ := ioutil.ReadAll(file)
-	json.Unmarshal(data, &recipes)
+	json.Unmarshal(data, &recipes.Recipes)
 
+	// test cookie handlers
 	http.HandleFunc("/cookie", cookieHandler) // cookie test
 	http.HandleFunc("/eatcookie", getCookieHandler)
+
+	// account management
 	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/signup", signupHandler)
 	//http.HandleFunc("/accountCheck", accountCheckHandler)
 
+	// shopping cart management
 	http.HandleFunc("/shoppinglist", shoppingListHandler)
-
 	http.HandleFunc("/shoppinglist/update", listUpdateHandler)
 
+	// main blog page / search functionality
 	http.HandleFunc("/blog", blogHandler)
+	http.HandleFunc("/search", searchHandler)
 
+	// serves Javascript file
 	http.HandleFunc("/js", jsHandler)
 
+	// recipe upload / viewing
 	http.HandleFunc("/recipe", recipeHandler)
 	http.HandleFunc("/upload", uploadHandler)
 	http.HandleFunc("/upload/result", resultHandler)
+
 	log.Fatal(http.ListenAndServe("localhost:8000", nil))
 }
 
@@ -205,6 +246,7 @@ func cookieHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("cookie set"))
 }
 
+// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // recieves a request of form /recipe?id=ID, looks up the
 // the corresponding json recipe with id ID and responds
 // with an HTML page representing the recipe.
@@ -212,13 +254,7 @@ func recipeHandler(w http.ResponseWriter, r *http.Request) {
 	valuesMap, err := url.ParseQuery(r.URL.RawQuery)
 	checkError(err)
 
-	var item Recipe // recipe lookup
-	for i := range recipes {
-		if recipes[i].ID == valuesMap["id"][0] {
-			item = recipes[i]
-			break
-		}
-	}
+	item := recipes.Lookup(valuesMap["id"][0]) // recipe lookup
 	// this fixed a problem where the HTML was being
 	// interpreted as plain text
 	w.Header().Set("Content-Type", "text/html")
@@ -346,37 +382,26 @@ func blogHandler(w http.ResponseWriter, r *http.Request) {
 	blogPage, err := template.ParseFiles("blog_templ.html")
 	checkError(err)
 
-	// creates a blog page using 'title' as search value
+	title := ""
+	ingredients := make([]string, 0)
+	search := false
 	if valuesMap["title"] != nil {
-		var search []Recipe
-		for i := range recipes {
-			if strings.Contains(
-				strings.ToLower(recipes[i].Title),
-				html.UnescapeString(strings.ToLower(valuesMap["title"][0])), // search is case insensitive
-			) {
-				search = append(search, recipes[i])
-			}
+		title = valuesMap["title"][0]
+		search = true
+	}
+	if valuesMap["ingredient"] != nil {
+		for _, i := range valuesMap["ingredient"] {
+			ingredients = append(ingredients, i)
 		}
-		err = blogPage.Execute(w, search)
+		search = true
+	}
+
+	if search {
+		results := recipes.SearchRecipe(title, ingredients)
+		err = blogPage.Execute(w, results)
 		checkError(err)
-		// creates a blog page using 'ingredient' as search value
-	} else if valuesMap["ingredient"] != nil {
-		var search []Recipe
-		for i := range recipes {
-			for j := range recipes[i].Ingredients {
-				if strings.Contains(
-					strings.ToLower(recipes[i].Ingredients[j].Name),
-					html.UnescapeString(strings.ToLower(valuesMap["ingredient"][0])), // search is case insensitive
-				) {
-					search = append(search, recipes[i])
-				}
-			}
-		}
-		err = blogPage.Execute(w, search)
-		checkError(err)
-		// creates a blog page using all recipes
 	} else {
-		err = blogPage.Execute(w, recipes)
+		err = blogPage.Execute(w, recipes.Recipes)
 		checkError(err)
 	}
 }
@@ -391,13 +416,13 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 func resultHandler(w http.ResponseWriter, r *http.Request) {
 
 	// get ingredients and instructions from form
-	var ingredientList []Ingredient
+	var ingredientList = make(map[string]Ingredient)
 	count, err := strconv.Atoi(r.FormValue("ingredientCount"))
 	checkError(err)
 	for i := 0; i < count; i++ {
 		ingredient := fmt.Sprintf("ingredient[%d]", i)
 		quantity := fmt.Sprintf("quantity[%d]", i)
-		ingredientList = append(ingredientList, Ingredient{r.FormValue(ingredient), r.FormValue(quantity)})
+		ingredientList[strings.ToLower(r.FormValue(ingredient))] = Ingredient{r.FormValue(ingredient), r.FormValue(quantity)}
 	}
 
 	var instructionList []string
@@ -415,19 +440,19 @@ func resultHandler(w http.ResponseWriter, r *http.Request) {
 
 	// update recipes in memory
 	item := Recipe{Title: r.FormValue("title"),
-		ID:           fmt.Sprintf("%d", len(recipes)),
+		ID:           "nil",
 		Author:       user.User,
 		Date:         time.Now().Format("01/02/2022"),
 		Ingredients:  ingredientList,
 		Instructions: instructionList,
 	}
-	recipes = append(recipes, item)
+	id := recipes.AddRecipe(item)
 
 	// add recipe to json file
 	file, err := os.Create("recipes.json")
 	checkError(err)
 	defer file.Close()
-	data, err := json.MarshalIndent(recipes, "", " ")
+	data, err := json.MarshalIndent(recipes.Recipes, "", " ")
 	checkError(err)
 	n, err := file.Write(data)
 
@@ -436,7 +461,7 @@ func resultHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, `<h1>Upload Error - Bytes Written %d, %s</h1>`, n, err)
 	} else {
 		fmt.Fprintf(w, `<h1>Upload Successful</h1>
-		<a href="http://localhost:8000/recipe?id=%s">-View Recipe-</a>`, item.ID)
+		<a href="http://localhost:8000/recipe?id=%s">-View Recipe-</a>`, id)
 	}
 	fmt.Fprintf(w, `<a href="http://localhost:8000/blog">-Return to Blog-</a>`)
 
@@ -444,13 +469,7 @@ func resultHandler(w http.ResponseWriter, r *http.Request) {
 
 // Search handler to list the recipe handlers.
 func searchHandler(w http.ResponseWriter, r *http.Request) {
-	htmlForm := `<h1>Search for a recipe in the Blog Page</h1>
-		    <form>
-		    	<div>Title:      <input type="text" id="title"></div>
-			<div>Ingredient: <input type="text" id="ingredient"></div>
-			<div><button type="button" onclick="searchRetrieval()">Search</button></div>
-		    </form>`
-	fmt.Fprintf(w, htmlForm)
+	http.ServeFile(w, r, "search_templ.html")
 }
 
 /*
@@ -498,9 +517,7 @@ func shoppingListHandler(w http.ResponseWriter, r *http.Request) {
 
 	var items []Recipe
 	for i := 0; i < len(user.ShoppingList); i++ {
-		id, err := strconv.Atoi(user.ShoppingList[i]) // get recipe ID from SessionID ShoppingList
-		checkError(err)
-		items = append(items, recipes[id])
+		items = append(items, recipes.Lookup(user.ShoppingList[i]))
 	}
 
 	err = shoppingPage.Execute(w, items)
