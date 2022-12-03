@@ -521,7 +521,10 @@ func listUpdateHandler(w http.ResponseWriter, r *http.Request) {
 	checkError(err)
 
 	cookie, err := r.Cookie("GoRecipeBlog_sessionid")
-	checkError(err)
+	if err != nil {
+		fmt.Fprintf(w, `<h1>Error: User Session Invalid, cannot add to cart.</h1>`)
+		return
+	}
 
 	users.UpdateSessionCart(cookie.Value, valuesMap["id"][0])
 
