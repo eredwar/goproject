@@ -262,107 +262,52 @@ func recipeHandler(w http.ResponseWriter, r *http.Request) {
 func loginHandler(w http.ResponseWriter, r *http.Request) {
 	rand.Seed(time.Now().UnixNano())
 	sessionID := fmt.Sprint(rand.Intn(90000))
-	htmlForm := `<h1>Login to RecipeList</h1>
-	<form action="/accountCheck" method="POST">
-		<div>Username: <input type="text" name="userName"></div>
-		<div><input type="hidden" name="login" value="true"></div>
-		<div>Password: <input type="text" name="password"></div> 
-		<div><input type="hidden" name="sessionID" value="` + sessionID + `"></div>
-		<div><input type="submit"></div>
-	</form>
-	<div>Don't have account? <a href="/signup">Sign up</a>.</div>`
-	fmt.Fprintf(w, htmlForm)
+
+	page := template.New("login")
+	page1 := page.Funcs(template.FuncMap{"loggingIn": func() string { return "https://localhost:8000/blog" }})
+
+	report, err := page1.Parse(loginTemplate)
+	checkError(err)
+
+	err = report.Execute(w, page1)
+	checkError(err)
+	cookie := http.Cookie{
+		Name:     "GoRecipeBlog_sessionid",
+		Value:    sessionID,
+		Path:     "/",
+		MaxAge:   3600,
+		HttpOnly: true,
+		Secure:   true,
+		SameSite: http.SameSiteLaxMode,
+	}
+
+	test := r.URL.RawQuery
+	if sessionID == test {
+		time.Sleep(50 * time.Millisecond)
+		http.Redirect(w, r, "https://localhost:8000/blog", http.StatusAccepted)
+	}
+
+	http.Redirect(w, r, "https://localhost:8000/eatcookie?cookie="+cookie.Value, http.StatusSeeOther)
 }
+
+const signupTemplate = `<h1>Sign Up to RecipeList</h1>
+<form method="POST">
+<div>Username: <input type="text" name="userName"></div>
+<div>Password: <input type="text" name="password"></div>
+<div><input type="hidden" name="sessionID" value={{.}}></div>
+<div><input type="submit"></div>
+</form>
+<div>Already have an account? <a href="/login">Log in</a>.</div>`
 
 // Sign Up handler
 func signupHandler(w http.ResponseWriter, r *http.Request) {
 	rand.Seed(time.Now().UnixNano())
 	sessionID := fmt.Sprint(rand.Intn(90000))
-	htmlForm := `<h1>Sign Up to RecipeList</h1>
-	<form action="/accountCheck" method="POST">
-	<div>Username: <input type="text" name="userName"></div>
-	<div><input type="hidden" name="login" value="false"></div>
-	<div>Password: <input type="text" name="password"></div>
-	<div><input type="hidden" name="sessionID" value="` + sessionID + `"></div>
-	<div><input type="submit"></div>
-	</form>
-	<div>Already have an account? <a href="/login">Log in</a>.</div>`
-	fmt.Fprintf(w, htmlForm)
+	signT, err := template.New("signUp").Parse(signupTemplate)
+	checkError(err)
+	err = signT.Execute(w, sessionID)
+	checkError(err)
 }
-
-/*
-	func accountCheckHandler(w http.ResponseWriter, r *http.Request) {
-		f, err := nil, nil
-		file := nil
-		count := 0
-		newSession := nil
-		options := os.O_CREATE | os.O_APPEND
-		var scanner bufio.Scanner = nil
-		loggedIn := false
-		newAccount := true
-
-		if r.FormValue("login") == "true" {
-			options = os.O_RDONLY
-			f, err = os.OpenFile("accounts.txt", options, os.FileMode(0600))
-			if err != nil {
-				log.Fatal(err)
-				fmt.Fprintf(w, `<h1>Error: This site has 0 accounts.</h1>
-				<div><a href="localhost:8000/login">Sign up for this account</a></div>`)
-			} else {
-				scanner = bufio.NewScanner(f)
-				for scanner.Scan() {
-					if scanner.Text().contains(r.FormValue("userName")) &&
-						scanner.Text().contains(r.FormValue("password")) {
-						loggedIn = true
-					}
-				}
-			}
-		} else {
-			f, err = os.OpenFile("accounts.txt", options, os.FileMode(0600))
-			if err != nil {
-				log.Fatal(err)
-			}
-			scanner = bufio.NewScanner(f)
-			for scanner.Scan() {
-				if scanner.Text().contains(r.FormValue("userName")) ||
-					scanner.Text().contains(r.FormValue("password")) {
-					newAccount = false
-				}
-			}
-			if newAccount {
-				fmt.Fprintln(f, "Username:"+r.FormValue("userName")+" Password:"+r.FormValue("password"))
-				f.close()
-				serverUser.User = r.FormValue("userName")
-				serverUser.ID = r.FormValue("sessionID")
-				serverUser.Password = r.FormValue("password")
-				serverUser.SessionURL = r.URL.Path
-				http.Redirect(w, r, "localhost:8000/blog", http.StatusSeeOther)
-			} else {
-				fmt.Fprintf(w, `<div>Sorry, but that account username or password already exists.</div>
-				<div><a href="localhost:8000/signup">Back to Sign Up</a></div>
-				<div>Already have an account? <a href="localhost:8000/login">Log in here</a>.</div>`)
-			}
-		}
-		if loggedIn {
-			serverUser.User = r.FormValue("userName")
-			serverUser.ID = r.FormValue("sessionID")
-			serverUser.Password = r.FormValue("password")
-			serverUser.SessionURL = r.URL.Path
-			serverUser.List = recipes
-			options = os.O_CREATE | os.O_APPEND
-			file, err = os.OpenFile("recipes.txt", options, os.FileMode(0600))
-			if err != nil {
-				log.Fatal(err)
-			}
-			for i := 0; i < len(recipes); i++ {
-				fmt.Fprintln(file, recipes[i])
-			}
-			file.close()
-			http.Redirect(w, r, "localhost:8000/blog", http.StatusSeeOther)
-		}
-		f.close()
-	}
-*/
 
 // http://localhost:8000/blog?title=pizza
 
