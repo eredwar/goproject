@@ -160,3 +160,8 @@ button:active {
 #grocery_table {
     margin-top: 0px;
 }
+
+.result_buttons {
+    margin: 0 auto;
+    width: 440px;
+}

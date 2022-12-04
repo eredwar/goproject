@@ -420,6 +420,8 @@ func uploadHandler(w http.ResponseWriter, r *http.Request) {
 // takes form data from /upload, parses it, and saves new recipe in memory and storage.
 // serves a page indicating success or failure
 func resultHandler(w http.ResponseWriter, r *http.Request) {
+	result, err := template.ParseFiles("upload_success_templ.html")
+	checkError(err)
 
 	// get ingredients and instructions from form
 	var ingredientList = make(map[string]Ingredient)
@@ -456,7 +458,8 @@ func resultHandler(w http.ResponseWriter, r *http.Request) {
 		Ingredients:  ingredientList,
 		Instructions: instructionList,
 	}
-	id := recipes.AddRecipe(item)
+
+	item.ID = recipes.AddRecipe(item)
 
 	// add recipe to json file
 	file, err := os.Create("recipes.json")
@@ -466,14 +469,16 @@ func resultHandler(w http.ResponseWriter, r *http.Request) {
 	checkError(err)
 	n, err := file.Write(data)
 
-	// serve page
+	// check write error
 	if err != nil {
 		fmt.Fprintf(w, `<h1>Upload Error - Bytes Written %d, %s</h1>`, n, err)
-	} else {
-		fmt.Fprintf(w, `<h1>Upload Successful</h1>
-		<a href="http://localhost:8000/recipe?id=%s">-View Recipe-</a>`, id)
+		fmt.Fprintf(w, `<a href="http://localhost:8000/blog">-Return to Blog-</a>`)
+		return
 	}
-	fmt.Fprintf(w, `<a href="http://localhost:8000/blog">-Return to Blog-</a>`)
+
+	// serve page
+	err = result.Execute(w, item)
+	checkError(err)
 
 }
 
