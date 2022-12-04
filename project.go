@@ -423,8 +423,12 @@ func resultHandler(w http.ResponseWriter, r *http.Request) {
 
 	// get ingredients and instructions from form
 	var ingredientList = make(map[string]Ingredient)
+	fmt.Println(r.FormValue("ingredientCount"))
 	count, err := strconv.Atoi(r.FormValue("ingredientCount"))
-	checkError(err)
+	if err != nil {
+		fmt.Fprintf(w, `<p>Server Error</p><a href="http://localhost:8000/blog">-Return to Blog-</a>`)
+		return
+	}
 	for i := 0; i < count; i++ {
 		ingredient := fmt.Sprintf("ingredient[%d]", i)
 		quantity := fmt.Sprintf("quantity[%d]", i)
@@ -448,7 +452,7 @@ func resultHandler(w http.ResponseWriter, r *http.Request) {
 	item := Recipe{Title: r.FormValue("title"),
 		ID:           "nil",
 		Author:       user.User,
-		Date:         time.Now().Format("01/02/2022"),
+		Date:         time.Now().Format("01/02/2006"),
 		Ingredients:  ingredientList,
 		Instructions: instructionList,
 	}
