@@ -1,9 +1,31 @@
-    <a href="http://localhost:8000/blog">-Return to Blog-</a>    
-    <ul>
-    {{range .}}
-    <p>{{.Title}}</p>
-    {{range .Ingredients}}
-    <li>{{.Name}} -- {{.Quantity}}</li>
-    {{end}}
-    {{end}}
-    </ul>
+<head>
+    <title>Recipe Blog</title>
+      <script type="text/javascript" src="http://localhost:8000/js">
+      </script>
+      <link rel="stylesheet" href="http://localhost:8000/blog.css">
+      <hr>
+      <h1>Grocery List</h1> 
+      <hr> 
+    </head>
+    <body>    
+        <div>
+        <table id="grocery_table">
+            <thead>
+          <tr>
+            <th>Ingredient</th>
+            <th>Quantity</th>
+          </tr>
+          </thead>
+          <tbody>
+            {{range .}}
+            {{range .Ingredients}}
+            <tr>
+            <td>{{.Name}}</td>
+            <td>{{.Quantity}}</td>
+        </tr>
+        {{end}}
+        {{end}}
+        </tbody>
+        </table>
+        </div>
+    </body>

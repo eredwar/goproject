@@ -11,7 +11,7 @@
     <p class="author_info">Submitted by {{.Author}} on {{.Date}}.</p>
     <div class="buttons">
     <a class="site_function" href="http://localhost:8000/upload">Upload a Recipe</a>
-    <a class="site_function" href="http://localhost:8000/shoppinglist">View Grochery List</a>
+    <a class="site_function" href="http://localhost:8000/grocerylist">View Grocery List</a>
     <a class="site_function" href="http://localhost:8000/blog">Return to Blog</a>
 </div>
 <div id="recipe_table">
@@ -32,7 +32,7 @@
 </tbody>
 </table>
 </div>
-<button id="recipe_add_to_cart" class="add_to_cart" type="button" onclick="updateCart({{.ID}})">Add to Grochery List</button>
+<button id="recipe_add_to_cart" class="add_to_cart" type="button" onclick="updateCart({{.ID}})">Add to Grocery List</button>
 <p id="list_title">Instructions</p>    
 <ol class="instruction_list">
     {{range .Instructions}}

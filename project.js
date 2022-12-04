@@ -2,7 +2,7 @@
 
 function updateCart(id) {
     var req = new XMLHttpRequest();
-    var item = "http://localhost:8000/shoppinglist/update?id=" + id;
+    var item = "http://localhost:8000/grocerylist/update?id=" + id;
     req.open("GET", item, false);
     req.send(null);
     return req.responseText;

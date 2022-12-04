@@ -10,7 +10,7 @@
   <body>
   <div class="buttons">
     <a class="site_function" href="http://localhost:8000/upload">Upload a Recipe</a>
-    <a class="site_function" href="http://localhost:8000/shoppinglist">View Shopping List</a>
+    <a class="site_function" href="http://localhost:8000/grocerylist">View Grocery List</a>
     <a class="site_function" href="http://localhost:8000/search">Search for Recipes</a>
     </div>
     <table id="recipes" class="recipes_table">
@@ -28,7 +28,7 @@
       <td><a href='http://localhost:8000/recipe?id={{.ID}}'>{{.Title}}</a></td>
       <td>{{.Author}}</td>
       <td>{{.Date}}</td>
-      <td><button class="add_to_cart" type="button" onclick="updateCart({{.ID}})">Add to Grochery List</button></td>
+      <td><button class="add_to_cart" type="button" onclick="updateCart({{.ID}})">Add to Grocery List</button></td>
     </tr>
     {{end}}
     </tbody>

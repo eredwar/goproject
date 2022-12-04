@@ -169,8 +169,8 @@ func main() {
 	//http.HandleFunc("/accountCheck", accountCheckHandler)
 
 	// shopping cart management
-	http.HandleFunc("/shoppinglist", shoppingListHandler)
-	http.HandleFunc("/shoppinglist/update", listUpdateHandler)
+	http.HandleFunc("/grocerylist", shoppingListHandler)
+	http.HandleFunc("/grocerylist/update", listUpdateHandler)
 
 	// main blog page / search functionality
 	http.HandleFunc("/blog", blogHandler)
