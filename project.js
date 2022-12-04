@@ -13,14 +13,16 @@ function updateCart(id) {
 var ingredientCount = 1;
 
 function addIngredient() {
-    var ingredientList = document.getElementById("ingredientList");
-    var ingredient = document.createElement("input");
-    ingredient.name = "ingredient[" + ingredientCount + "]";
-    ingredientList.appendChild(ingredient);
-    var quantity = document.createElement("input");
-    quantity.name = "quantity[" + ingredientCount + "]";
-    ingredientList.appendChild(quantity);
-    ingredientList.appendChild(document.createElement("br"));
+    var searchTable = document.getElementById("search_table").getElementsByTagName('tbody')[1];
+    var row = searchTable.insertRow();
+    var cell1 = row.insertCell();
+    var cell2 = row.insertCell();
+    ingredient_input = document.createElement("input");
+    ingredient_input.name = "ingredient[" + ingredientCount + "]";
+    cell1.appendChild(ingredient_input);
+    quantity_input = document.createElement("input");
+    quantity_input.name = "quantity[" + ingredientCount + "]";
+    cell2.appendChild(quantity_input);
     ingredientCount++;
     document.getElementById("ingredientCount").value = ingredientCount.toString();
 }
@@ -28,11 +30,13 @@ function addIngredient() {
 var instructionCount = 1;
 
 function addInstruction() {
-    var instructionList = document.getElementById("instructionList");
-    var instruction = document.createElement("input");
-    instruction.name = "instruction[" + instructionCount + "]";
-    instructionList.appendChild(instruction);
-    instructionList.appendChild(document.createElement("br"));
+    var searchTable = document.getElementById("search_table").getElementsByTagName('tbody')[2];
+    var row = searchTable.insertRow();
+    var cell1 = row.insertCell();
+    var cell2 = row.insertCell();
+    instruction_input = document.createElement("input");
+    instruction_input.name = "instruction[" + instructionCount + "]";
+    cell1.appendChild(instruction_input);
     instructionCount++;
     document.getElementById("instructionCount").value = instructionCount.toString();
 }
@@ -40,11 +44,13 @@ function addInstruction() {
 // --------- SEARCH PAGE FUNCTIONALITY -----------------
 
 function addSearchTerm() {
-    var ingredientList = document.getElementById("ingredientList");
-    var ingredient = document.createElement("input");
-    ingredient.name = "ingredient";
-    ingredientList.appendChild(ingredient);
-    ingredientList.appendChild(document.createElement("br"));
+    var searchTable = document.getElementById("search_table").getElementsByTagName('tbody')[0];
+    var row = searchTable.insertRow();
+    var cell1 = row.insertCell();
+    var cell2 = row.insertCell();
+    search_input = document.createElement("input");
+    search_input.name = "ingredient";
+    cell2.appendChild(search_input);
 }
 
 function searchRetrieval() {

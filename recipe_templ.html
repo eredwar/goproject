@@ -9,12 +9,13 @@
 </head>
 <body>
     <p class="author_info">Submitted by {{.Author}} on {{.Date}}.</p>
-    <div class="recipe_buttons">
+    <div class="buttons">
+    <a class="site_function" href="http://localhost:8000/upload">Upload a Recipe</a>
+    <a class="site_function" href="http://localhost:8000/shoppinglist">View Grochery List</a>
     <a class="site_function" href="http://localhost:8000/blog">Return to Blog</a>
-    <a class="site_function" href="http://localhost:8000/shoppinglist">View Shopping List</a>
 </div>
-<div id="ingredients_table">
-<table class="recipes_table">
+<div id="recipe_table">
+<table>
     <thead>
   <tr>
     <th>Ingredient</th>

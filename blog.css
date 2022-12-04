@@ -25,6 +25,8 @@ h1 {
     width: 150px;
     margin: 10px;
     float: left;
+    font-size: 16px;
+    font-weight: bold;
 }
 
 .site_function:hover {
@@ -40,7 +42,7 @@ hr {
     border: 1px dashed rgb(128, 68, 0);
 }
 
-.recipes_table {
+table {
     margin-left: auto;
     margin-right: auto;
     margin-top: 100px;
@@ -50,31 +52,31 @@ hr {
     text-align: left
 }
 
-.recipes_table thead tr {
+table thead tr {
     background-color: rgb(255, 161, 53);
     color: #ffffff;
     text-align: left;
 }
 
-.recipes_table th,
-.recipes_table td {
+table th,
+table td {
     padding: 12px 15px;
 }
 
-.recipes_table tbody tr {
+table tbody tr {
     border-bottom: thin solid #dddddd;
 }
 
-.recipes_table tbody tr:nth-of-type(even) {
+table tbody tr:nth-of-type(even) {
     background-color: #f3f3f3;
 }
 
-.recipes_table tbody tr:last-of-type {
+table tbody tr:last-of-type {
     border-bottom: thin solid rgb(255, 161, 53);
 }
 
-.add_to_cart {
-    background-color: rgb(255, 161, 53);
+button {
+    background-color: #9F2B00;
     border: none;
     color: white;
     padding: 12px 20px;
@@ -82,14 +84,15 @@ hr {
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
+    font-weight: bold;
 }
 
-.add_to_cart:hover {
-    background-color: rgb(190, 102, 0);
+button:hover {
+    background-color: #832300;
 }
 
-.add_to_cart:active {
-    background-color: rgb(128, 69, 2);
+button:active {
+    background-color: #330e00;
 }
 
 .author_info {
@@ -102,11 +105,6 @@ hr {
     clear:both;
     margin: 0 auto;
     margin-top: 10;
-}
-
-.recipe_buttons {
-    width: 450;
-    margin: 0 auto;
 }
 
 .instruction_list {
@@ -127,4 +125,34 @@ hr {
     font-size: 20px;
 }
 
+#search_table {
+    margin-top: 100px;
+}
 
+#search_table tbody tr {
+    background-color: #f3f3f3;
+}
+
+.search_button {
+    display: block;
+    float: left;
+    width: 160px;
+}
+
+#search_container {
+    margin: auto;
+    width: 320px;
+    padding-top: 5px;
+}
+
+.upload_button {
+    display: block;
+    float: left;
+    width: 160;
+}
+
+#upload_container {
+    margin: auto;
+    width: 480px;
+    padding-top: 5px;
+}

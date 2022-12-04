@@ -1,10 +1,42 @@
 <head>
+	<title>Recipe Search</title>
 	<script type="text/javascript" src="http://localhost:8000/js">
-	</script></head>
-	<h1>Recipe Search</h1>
-			<div>Title<input type="text" name="title"/></div>
+	</script>
+	<link rel="stylesheet" href="http://localhost:8000/blog.css">
+    <hr>
+    <h1>Recipe Search</h1> 
+    <hr> 
+</head>
+<body>
+	<div class="buttons">
+		<a class="site_function" href="http://localhost:8000/upload">Upload a Recipe</a>
+		<a class="site_function" href="http://localhost:8000/shoppinglist">View Shopping List</a>
+		<a class="site_function" href="http://localhost:8000/blog">Return to Blog</a>
+		</div>
+		<div>
+<table id="search_table">
+	<thead>
+  <tr>
+	<th>Title</th>
+	<th><input type="text" name="title"></th>
+  </tr>
+  </thead>
+  <tbody>
+	<tr>
+		<th>Ingredient</th>
+		<th><input type="text" name="ingredient"></th>
+	  </tr>
+  </tbody>
+</table>
+</div>
+<div id="search_container">
+<button class="search_button" type="button" onclick="addSearchTerm()">Add Ingredient</button>
+<button class="search_button" type="button" onclick="searchRetrieval()">Search</button>
+</div>
+</body>
+			<!-- <div>Title<input type="text" name="title"/></div>
 			<div>Ingredient<input type="text" name="ingredient"/></div>
 			<div id="ingredientList"></div>
 			<button type="button" onclick="addSearchTerm()">Add Ingredient</button>
             <button type="button" onclick="searchRetrieval()">Search</button>
-			<input type="hidden" id="searchCount" name="searchCount" value="0">
+			<input type="hidden" id="searchCount" name="searchCount" value="0"> -->

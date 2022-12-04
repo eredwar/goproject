@@ -1,8 +1,69 @@
 <head>
 	<script type="text/javascript" src="http://localhost:8000/js">
-	</script></head>
-	<h1>Recipe Upload</h1>
-		<form action="/upload/result" method="POST">
+	</script>
+	<link rel="stylesheet" href="http://localhost:8000/blog.css"> 
+	<hr>
+	<h1>Recipe Upload</h1>   
+	<hr>
+	</head>
+<body>
+	<div class="buttons">
+		<a class="site_function" href="http://localhost:8000/blog">Return to Blog</a>
+		<a class="site_function" href="http://localhost:8000/shoppinglist">View Shopping List</a>
+		<a class="site_function" href="http://localhost:8000/search">Search for Recipes</a>
+		</div>
+		<div>
+	<form id="upload_form" action="/upload/result" method="POST">
+		<table id="search_table">
+			<thead>
+		  <tr>
+			<th>Title</th>
+			<th></th>
+		  </tr>
+		</thead>
+		<tbody>
+			<tr>
+				<th><input type="text" name="title"></th>
+				<th></th>
+			  </tr>
+		  </tbody>
+		  <thead>
+		  <tr>
+			<th>Ingredient</th>
+			<th>Quantity</th>
+		  </tr>
+		  </thead>
+		  <tbody>
+			<tr>
+				<th><input type="text" name="ingredient[0]"></th>
+				<th><input type="text" name="quantity[0]"></th>
+			  </tr>
+		  </tbody>
+		  <thead>
+			<tr>
+			  <th>Instruction</th>
+			  <th></th>
+			</tr>
+			</thead>
+			<tbody>
+			  <tr>
+				  <th><input type="text" name="instruction[0]"></th>
+				  <th></th>
+				</tr>
+			</tbody>
+		</table>
+		<div id="upload_container">
+			<button class="upload_button" type="button" onclick="addIngredient()">Add Ingredient</button>
+			<button class="upload_button" type="button" onclick="addInstruction()">Add Instruction</button>
+			<button class="upload_button" type="submit">Submit</button>
+		</div>
+	</form>
+</div>
+	<input type="hidden" id="ingredientCount" name="ingredientCount" value="1">
+	<input type="hidden" id="instructionCount" name="instructionCount" value="1">
+</body>
+
+		<!-- <form action="/upload/result" method="POST">
 			<div>Title<input type="text" name="title"></div>
 			<div>Ingredient<input type="text" name="ingredient[0]"></div>
 			<div>Quantity<input type="text" name="quantity[0]"></div>
@@ -14,4 +75,4 @@
 			<div><input type="submit"></div>
 			<input type="hidden" id="ingredientCount" name="ingredientCount" value="1">
 			<input type="hidden" id="instructionCount" name="instructionCount" value="1">
-		</form>
+		</form> -->
