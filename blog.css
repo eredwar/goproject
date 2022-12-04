@@ -4,16 +4,16 @@ body {
   }
 
 h1 {
-    color: rgb(255, 136, 0);
+    color: rgb(255, 161, 53);
     text-align:center;
 }
 
-#buttons {
+.buttons {
     margin: 0 auto;
     width: 660px;
 }
 
-#site_function {
+.site_function {
     display: block;
     background-color: rgb(255, 161, 53);
     padding: 15px 25px;
@@ -27,21 +27,104 @@ h1 {
     float: left;
 }
 
-#site_function:hover {
+.site_function:hover {
     background-color: rgb(190, 102, 0);
 }
 
-#site_function:active {
+.site_function:active {
     box-shadow: none;
     top: 7px;
-}
-#recipes {
-    float: none;
-    clear: both;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 hr {
     border: 1px dashed rgb(128, 68, 0);
 }
+
+.recipes_table {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 100px;
+    border-collapse: collapse;
+    /*min-width: 400px;
+    box-shadow: 0px 7px 0 rgb(128, 68, 0);*/
+    text-align: left
+}
+
+.recipes_table thead tr {
+    background-color: rgb(255, 161, 53);
+    color: #ffffff;
+    text-align: left;
+}
+
+.recipes_table th,
+.recipes_table td {
+    padding: 12px 15px;
+}
+
+.recipes_table tbody tr {
+    border-bottom: thin solid #dddddd;
+}
+
+.recipes_table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+.recipes_table tbody tr:last-of-type {
+    border-bottom: thin solid rgb(255, 161, 53);
+}
+
+.add_to_cart {
+    background-color: rgb(255, 161, 53);
+    border: none;
+    color: white;
+    padding: 12px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+
+.add_to_cart:hover {
+    background-color: rgb(190, 102, 0);
+}
+
+.add_to_cart:active {
+    background-color: rgb(128, 69, 2);
+}
+
+.author_info {
+    text-align: center;
+}
+
+#recipe_add_to_cart {
+    display: block;
+    float:none;
+    clear:both;
+    margin: 0 auto;
+    margin-top: 10;
+}
+
+.recipe_buttons {
+    width: 450;
+    margin: 0 auto;
+}
+
+.instruction_list {
+    display: block;
+    background-color: #f3f3f3;
+    margin: 0 auto;
+    margin-top: 10px;
+    width: 450px;
+    border: thin solid rgb(255, 161, 53);
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+#list_title {
+    display: block;
+    text-align: center;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+

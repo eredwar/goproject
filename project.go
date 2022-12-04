@@ -149,7 +149,7 @@ var serverUser *Session = &Session{User: "None", ID: "00000",
 
 func main() {
 
-	users.AddSession(&Session{User: "Charlie Edwards", ID: "42", ShoppingList: make([]string, 0)}) // test value for SessionMap
+	users.AddSession(&Session{User: "Charlie Edwards", ID: "userID", ShoppingList: make([]string, 0)}) // test value for SessionMap
 	// load in recipes from recipes.json
 	file, err := os.Open("recipes.json")
 	if err != nil {
@@ -220,9 +220,10 @@ func getCookieHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func cookieHandler(w http.ResponseWriter, r *http.Request) {
+	// copy and paste this
 	cookie := http.Cookie{
 		Name:     "GoRecipeBlog_sessionid",
-		Value:    "42",
+		Value:    "userID", // USE THE UNIQUE USER ID THAT WAS GENERATED
 		Path:     "/",
 		MaxAge:   3600,
 		HttpOnly: true,

@@ -1,20 +1,41 @@
 <head>
     <title>{{.Title}}</title>
     <script type="text/javascript" src="http://localhost:8000/js">
-    </script></head>
-    <h1>{{.Title}}</h1>
-    <p>Submitted by {{.Author}} on {{.Date}}.</p>
-    <a href="http://localhost:8000/blog">-Return to Blog-</a>
-    <a href="http://localhost:8000/shoppinglist">-View Shopping List-</a>
-    <button type="button" onclick="updateCart({{.ID}})">Add to Grochery List</button>
-    <ul>
+    </script>
+<link rel="stylesheet" href="http://localhost:8000/blog.css"> 
+<hr>
+<h1>{{.Title}}</h1>   
+<hr>
+</head>
+<body>
+    <p class="author_info">Submitted by {{.Author}} on {{.Date}}.</p>
+    <div class="recipe_buttons">
+    <a class="site_function" href="http://localhost:8000/blog">Return to Blog</a>
+    <a class="site_function" href="http://localhost:8000/shoppinglist">View Shopping List</a>
+</div>
+<div id="ingredients_table">
+<table class="recipes_table">
+    <thead>
+  <tr>
+    <th>Ingredient</th>
+    <th>Quantity</th>
+  </tr>
+  </thead>
+  <tbody>
     {{range .Ingredients}}
-    <li>{{.Name}} -- {{.Quantity}}</li>
-    {{end}}
-    <p>Add Ingredients to Shopping List</p>
-    </ul>
-    <ol>
+    <tr>
+    <td>{{.Name}}</td>
+    <td>{{.Quantity}}</td>
+</tr>
+{{end}}
+</tbody>
+</table>
+</div>
+<button id="recipe_add_to_cart" class="add_to_cart" type="button" onclick="updateCart({{.ID}})">Add to Grochery List</button>
+<p id="list_title">Instructions</p>    
+<ol class="instruction_list">
     {{range .Instructions}}
     <li>{{.}}</li>
     {{end}}
     </ol>`
+    </body>
