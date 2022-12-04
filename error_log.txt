@@ -34,6 +34,7 @@
 .\project.go:50:74: cannot use 1 (untyped int constant) as string value in struct literal
 .\project.go:66:15: undefined: recipe
 .\project.go:94:37: invalid operation: make([]Recipe) expects 2 or 3 arguments; found 1
+
 .\project.go:211:12: use of untyped nil in assignment
 .\project.go:212:10: use of untyped nil in assignment
 .\project.go:214:16: use of untyped nil in assignment
@@ -57,3 +58,28 @@
 
 // Test Wave Final: 12/3/2022 - 7:07 AM (EST)
 CreateFile project.go: The system cannot find the file specified.
+
+// Test Wave Final Part 2 (Update): 12/3/2022 - 7:27 PM (EST)
+func loginHandler(w http.ResponseWriter, r *http.Request) {
+	rand.Seed(time.Now().UnixNano())
+	sessionID := fmt.Sprint(rand.Intn(90000))
+
+	page := template.New("login")
+	page1 := page.Funcs(template.FuncMap{"loggingIn": func() string { return "Cool Cakes!" }})
+
+	report, err := page1.Parse(loginTemplate)
+	checkError(err)
+
+	err = report.Execute(w, page1)
+	checkError(err)
+	cookie := http.Cookie{
+		Name:     "GoRecipeBlog_sessionid",
+		Value:    sessionID,
+		Path:     "/",
+		MaxAge:   3600,
+		HttpOnly: true,
+		Secure:   true,
+		SameSite: http.SameSiteLaxMode,
+	}
+	http.Redirect(w, r, "https://localhost:8000/eatcookie?cookie="+cookie.Value, http.StatusSeeOther)
+} // Please let me know what you think. The sign up is less complicated, but I sill have to add to the loginHandler to check for pre-existing accounts that have been added to the system.
