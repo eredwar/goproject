@@ -166,7 +166,8 @@ func main() {
 	// account management
 	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/signup", signupHandler)
-	//http.HandleFunc("/accountCheck", accountCheckHandler)
+	http.HandleFunc("/loginVerify", loginVerifyHandler)
+	http.HandleFunc("/signupVerify", signupVerifyHandler)
 
 	// shopping cart management
 	http.HandleFunc("/grocerylist", shoppingListHandler)
@@ -260,53 +261,94 @@ func recipeHandler(w http.ResponseWriter, r *http.Request) {
 
 // Login handler
 func loginHandler(w http.ResponseWriter, r *http.Request) {
-	rand.Seed(time.Now().UnixNano())
-	sessionID := fmt.Sprint(rand.Intn(90000))
-
-	page := template.New("login")
-	page1 := page.Funcs(template.FuncMap{"loggingIn": func() string { return "https://localhost:8000/blog" }})
-
-	report, err := page1.Parse(loginTemplate)
-	checkError(err)
-
-	err = report.Execute(w, page1)
-	checkError(err)
-	cookie := http.Cookie{
-		Name:     "GoRecipeBlog_sessionid",
-		Value:    sessionID,
-		Path:     "/",
-		MaxAge:   3600,
-		HttpOnly: true,
-		Secure:   true,
-		SameSite: http.SameSiteLaxMode,
-	}
-
-	test := r.URL.RawQuery
-	if sessionID == test {
-		time.Sleep(50 * time.Millisecond)
-		http.Redirect(w, r, "https://localhost:8000/blog", http.StatusAccepted)
-	}
-
-	http.Redirect(w, r, "https://localhost:8000/eatcookie?cookie="+cookie.Value, http.StatusSeeOther)
+	http.ServeFile(w, r, "loginTemplate.html")
 }
 
-const signupTemplate = `<h1>Sign Up to RecipeList</h1>
-<form method="POST">
-<div>Username: <input type="text" name="userName"></div>
-<div>Password: <input type="text" name="password"></div>
-<div><input type="hidden" name="sessionID" value={{.}}></div>
-<div><input type="submit"></div>
-</form>
-<div>Already have an account? <a href="/login">Log in</a>.</div>`
+// Login Verification Handler
+func loginVerifyHandler(w http.ResponseWriter, r *http.Request) {
+	file, err := http.ServeFile("login.css")
+	checkError(err)
+	
+	rand.Seed(time.Now().UnixNano())
+	sessionID := fmt.Sprint(rand.Intn(90000))
+	username := r.FormValue("username")
+	password := r.FormValue("password")
+	verified := false
+	//check file for username // pseudo code
+	scanner, err := ioutil.ReadFile("accounts.txt")
+	defer scanner.Close()
+	checkError(err)
+	rawAccountInfo := strings.Fields(string(scanner))
+	for i := 0; i < len(rawAccountInfo); i++ {
+		if rawAccountInfo[i].contains(r.FormValue(username)) ||
+			rawAccountInfo[i].contains(r.FormValue(password)) {
+			verified = true
+		}
+	}
+
+	if verified {
+		cookie := http.Cookie{
+			Name:     "GoRecipeBlog_sessionid",
+			Value:    sessionID,
+			Path:     "/",
+			MaxAge:   3600,
+			HttpOnly: true,
+			Secure:   true,
+			SameSite: http.SameSiteLaxMode,
+		}
+
+		newUser := Session{User: username, ID: sessionID, ShoppingList: make([]string, 0)}
+		users.AddSession(*newUser)
+		http.SetCookie(w, &cookie)
+		http.Redirect(w, r, "https://localhost:8000/blog", http.StatusSeeOther)
+	} else {
+		fmt.Fprintf(w, `<h1>This account does not exist...</h1>
+		<div><a href="https://localhost:8000/login">Try again?</a></div>
+		<div>Don't have an account? Sign up <a href="https://localhost:8000/signup">here</a>.</div>`)
+	}
+}
 
 // Sign Up handler
 func signupHandler(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "signupTemplate.html")
+}
+
+// Sign Up Verification Handler
+func signupVerifyHandler(w http.ResponseWriter, r *http.Request) {
 	rand.Seed(time.Now().UnixNano())
 	sessionID := fmt.Sprint(rand.Intn(90000))
-	signT, err := template.New("signUp").Parse(signupTemplate)
+	newUser := false
+	username := r.FormValue("username")
+	password := r.FormValue("password")
+	
+	file, err := ioutil.ReadFile("accounts.txt")
 	checkError(err)
-	err = signT.Execute(w, sessionID)
+	
+	options := os.O_CREATE | os.O_APPEND
+	file, err = os.OpenFile("accounts.txt", options, os.FileMode(0600))
 	checkError(err)
+	defer file.Close()
+	
+	if newUser {
+		cookie := http.Cookie{
+			Name:     "GoRecipeBlog_sessionid",
+			Value:    sessionID,
+			Path:     "/",
+			MaxAge:   3600,
+			HttpOnly: true,
+			Secure:   true,
+			SameSite: http.SameSiteLaxMode,
+		}
+
+		newUser := Session{User: username, ID: sessionID, ShoppingList: make([]string, 0)}
+		users.AddSession(*newUser)
+		http.SetCookie(w, &cookie)
+		http.Redirect(w, r, "https://localhost:8000/blog", http.StatusSeeOther)
+	} else {
+		fmt.Fprintf(w, `<h1>This account does not exist...</h1>
+		<div><a href="https://localhost:8000/login">Try again?</a></div>
+		<div>Don't have an account? Sign up <a href="https://localhost:8000/signup">here</a>.</div>`)
+	}
 }
 
 // http://localhost:8000/blog?title=pizza
