@@ -107,7 +107,8 @@ func (s *SessionMap) UpdateSessionCart(id string, recipeID string) {
 ## Final Update (12/05/2022)
 This is just a note from me, Aaron Haas that while the site is not the most secure for testing purposes, it works, it is stable, and it is presentable. 
 Below is an image that shows the addition of a custom recipe for Kiwi Cake. My username by the way is "ThePancakeDwarf". I still need to finish some wrap arounds
-but the team leader Erik Edwards, is free to submit the current stable state now if he would like to since it is due tonight. Just to save the hassle. 
-A good(not perfect) grade is better than no grade at all.
+but the team leader Erik Edwards, is free to submit the current stable state now if he would like to since it is due tonight.
 
-![Correct Results](correct_results.png)
+<img src="correct_results.png" />
+
+
