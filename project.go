@@ -169,7 +169,7 @@ func main() {
 	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/signup", signupHandler)
 	http.HandleFunc("/login/verify", loginVerifyHandler)
-	//http.HandleFunc("/signupVerify", signupVerifyHandler)
+	http.HandleFunc("/signup/verify", signupVerifyHandler)
 
 	// shopping cart management
 	http.HandleFunc("/grocerylist", shoppingListHandler)
@@ -326,49 +326,70 @@ func loginVerifyHandler(w http.ResponseWriter, r *http.Request) {
 
 // Sign Up handler
 func signupHandler(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "signup_template.html")
+	http.ServeFile(w, r, "signup_templ.html")
 }
 
-/*
 // Sign Up Verification Handler
 func signupVerifyHandler(w http.ResponseWriter, r *http.Request) {
-	rand.Seed(time.Now().UnixNano())
-	sessionID := fmt.Sprint(rand.Intn(90000))
-	nUser := false
-	username := r.FormValue("username")
+	sessionID := uuid.New().String()
+	username := r.FormValue("userName")
 	password := r.FormValue("password")
 
-	file, err := ioutil.ReadFile("accounts.txt")
-	checkError(err)
-
+	//open accounts file storage
 	options := os.O_CREATE | os.O_APPEND
-	file, err = os.OpenFile("accounts.txt", options, os.FileMode(0600))
+	file, err := os.OpenFile("accounts.txt", options, os.FileMode(0600))
 	checkError(err)
+	scanner := bufio.NewScanner(file)
 	defer file.Close()
 
-	for i := 0; i < file.
-
-	if nUser {
-		cookie := http.Cookie{
-			Name:     "GoRecipeBlog_sessionid",
-			Value:    sessionID,
-			Path:     "/",
-			MaxAge:   3600,
-			HttpOnly: true,
-			Secure:   true,
-			SameSite: http.SameSiteLaxMode,
+	// search for username in accounts
+	found := false
+	for scanner.Scan() {
+		currentUsername := scanner.Text()
+		scanner.Scan()
+		if currentUsername == username {
+			found = true
+			break
 		}
-
-		newUser := Session{User: username, ID: sessionID, ShoppingList: make([]string, 0)}
-		users.AddSession(*newUser)
-		http.SetCookie(w, &cookie)
-		http.Redirect(w, r, "https://localhost:8000/blog", http.StatusSeeOther)
-	} else {
-		fmt.Fprintf(w, `<h1>This account already exists...</h1>
-		<div><a href="https://localhost:8000/signup>Try again?</a></div>
-		<div> Already have an account? Log in <a href="https://localhost:8000/login">here</a>.</div>`)
 	}
-} */
+
+	// if the username exists, send the user an error message
+	if found {
+		fmt.Fprintf(w, `<h1>This account already exists...</h1>
+		<div><a href="http://localhost:8000/signup>Try again?</a></div>
+		<div> Already have an account? Log in <a href="http://localhost:8000/login">here</a>.</div>`)
+		return
+	}
+
+	// otherwise add the new user to accounts.txt
+	if _, err := file.WriteString(fmt.Sprintf("%s\n%s\n", username, password)); err != nil {
+		checkError(err)
+	}
+
+	// set session id in users cookies
+	cookie := http.Cookie{
+		Name:     "GoRecipeBlog_sessionid",
+		Value:    sessionID,
+		Path:     "/",
+		MaxAge:   3600,
+		HttpOnly: true,
+		Secure:   true,
+		SameSite: http.SameSiteLaxMode,
+	}
+	http.SetCookie(w, &cookie)
+
+	// add the new session to SessionMap
+	newUser := &Session{
+		User:         username,
+		ID:           sessionID,
+		ShoppingList: make([]string, 0),
+	}
+	users.AddSession(newUser)
+
+	// send the user to the main blog page
+	http.Redirect(w, r, "http://localhost:8000/blog", http.StatusSeeOther)
+
+}
 
 // serves a /blog page with a list of all Recipes in recipes. If query terms are in URL
 // it generates a /blog page with only Recipes that match the query

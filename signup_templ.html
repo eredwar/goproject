@@ -1,0 +1,8 @@
+<h1>Sign Up to RecipeList</h1>
+<form action="/signup/verify" method="POST">
+<div>Username: <input type="text" name="userName"></div>
+<div>Password: <input type="text" name="password"></div>
+<div><input type="hidden" name="sessionID" value={{.}}></div>
+<div><input type="submit"></div>
+</form>
+<div>Already have an account? <a href="/login">Log in</a>.</div>
