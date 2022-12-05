@@ -4,7 +4,14 @@
 	</script>
 	<link rel="stylesheet" href="http://localhost:8000/blog.css">
     <hr>
-    <h1>Error</h1> 
+    <h1>Recipe Blog</h1> 
     <hr> 
 </head>
-<h1>{{. | errorMessage}}</h1> 
+<body>
+	<div class= "error_buttons">
+		<a class="site_function" href="http://localhost:8000/blog">-Return to Blog-</a>
+	</div>
+	<div class="error">
+		{{.}} 
+	</div>
+</body>

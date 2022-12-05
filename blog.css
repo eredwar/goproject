@@ -185,3 +185,18 @@ button:active {
 #switch_message {
     text-align: center;
 }
+
+.error {
+    text-align: center;
+    display: block;
+    float: none;
+    clear: both;
+    margin: auto;
+    color: black;
+}
+
+.error_buttons {
+    margin: auto;
+    margin-bottom: 100px;
+    width: 225px;
+}

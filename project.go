@@ -50,10 +50,14 @@ type SessionMap struct {
 }
 
 // looks up Session in SessionMap with ID id, and returns a copy of it
-func (s *SessionMap) Lookup(id string) Session {
+// returns an error if id is not a key in s
+func (s *SessionMap) Lookup(id string) (Session, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	return *s.Sessions[id]
+	if session, ok := s.Sessions[id]; ok {
+		return *session, nil
+	}
+	return Session{}, errors.New("ID not in SessionMap")
 }
 
 // adds a Session to SessionMap with key id
@@ -78,6 +82,7 @@ func (s *SessionMap) UpdateSessionCart(id string, recipeID string) {
 	user.ShoppingList = append(user.ShoppingList, recipeID)
 }
 
+// holds all the active user sessions in memory
 var users = SessionMap{Sessions: make(map[string]*Session)}
 
 // Slice of Recipe, safe for concurrent use
@@ -143,10 +148,10 @@ func (r *RecipeSlice) SearchRecipe(title string, ingredients []string) []Recipe 
 	return search
 }
 
+// holds all the blogs recipes in memory
 var recipes = RecipeSlice{Recipes: make([]*Recipe, 0)}
 
 func main() {
-	users.AddSession(&Session{User: "Charlie Edwards", ID: "userID", ShoppingList: make([]string, 0)}) // test value for SessionMap
 
 	// load in recipes from recipes.json
 	file, err := os.Open("recipes.json")
@@ -156,10 +161,6 @@ func main() {
 	defer file.Close()
 	data, _ := ioutil.ReadAll(file)
 	json.Unmarshal(data, &recipes.Recipes)
-
-	// test cookie handlers
-	http.HandleFunc("/cookie", cookieHandler) // cookie test
-	http.HandleFunc("/eatcookie", getCookieHandler)
 
 	// account management
 	http.HandleFunc("/login", loginHandler)
@@ -194,47 +195,6 @@ func checkError(err error) {
 	}
 }
 
-// http://localhost:8000/recipe?id=test
-
-// --------------------------------------------------------DELETE THESE TWO COOKIE HANDLERS AFTER THE REST OF THE CODE HAS BEEN SET UP FOR COOKIES -------------------------------------------------------
-func getCookieHandler(w http.ResponseWriter, r *http.Request) {
-	// Retrieve the cookie from the request using its name (which in our case is
-	// "exampleCookie"). If no matching cookie is found, this will return a
-	// http.ErrNoCookie error. We check for this, and return a 400 Bad Request
-	// response to the client.
-	cookie, err := r.Cookie("GoRecipeBlog_sessionid")
-	if err != nil {
-		switch {
-		case errors.Is(err, http.ErrNoCookie):
-			http.Error(w, "cookie not found", http.StatusBadRequest)
-		default:
-			log.Println(err)
-			http.Error(w, "server error", http.StatusInternalServerError)
-		}
-		return
-	}
-
-	// Echo out the cookie value in the response body.
-	w.Write([]byte(cookie.Value))
-}
-
-func cookieHandler(w http.ResponseWriter, r *http.Request) {
-	// copy and paste this
-	cookie := http.Cookie{
-		Name:     "GoRecipeBlog_sessionid",
-		Value:    "userID", // USE THE UNIQUE USER ID THAT WAS GENERATED
-		Path:     "/",
-		MaxAge:   3600,
-		HttpOnly: true,
-		Secure:   true,
-		SameSite: http.SameSiteLaxMode,
-	}
-
-	http.SetCookie(w, &cookie)
-	w.Write([]byte("cookie set"))
-}
-
-// ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // recieves a request of form /recipe?id=ID, looks up the
 // the corresponding json recipe with id ID and responds
 // with an HTML page representing the recipe.
@@ -244,7 +204,7 @@ func recipeHandler(w http.ResponseWriter, r *http.Request) {
 
 	item, err := recipes.Lookup(valuesMap["id"][0]) // recipe lookup
 	if err != nil {
-		fmt.Fprintf(w, `Error: Recipe has invalid ID`)
+		serveError(w, "Error: Recipe has invalid ID.")
 		return
 	}
 	// this fixed a problem where the HTML was being
@@ -359,7 +319,8 @@ func signupVerifyHandler(w http.ResponseWriter, r *http.Request) {
 
 	// otherwise add the new user to accounts.txt
 	if _, err := file.WriteString(fmt.Sprintf("%s\n%s\n", username, password)); err != nil {
-		checkError(err)
+		serveError(w, "Error: Issue creating account, try again later.")
+		return
 	}
 
 	// set session id in users cookies
@@ -444,12 +405,12 @@ func resultHandler(w http.ResponseWriter, r *http.Request) {
 	result, err := template.ParseFiles("upload_success_templ.html")
 	checkError(err)
 
-	// get ingredients and instructions from form
+	// get ingredients from form
 	var ingredientList = make(map[string]Ingredient)
 	fmt.Println(r.FormValue("ingredientCount"))
 	count, err := strconv.Atoi(r.FormValue("ingredientCount"))
 	if err != nil {
-		fmt.Fprintf(w, `<p>Server Error</p><a href="http://localhost:8000/blog">-Return to Blog-</a>`)
+		serveError(w, "Error: Issue retrieving recipe data, try again later.")
 		return
 	}
 	for i := 0; i < count; i++ {
@@ -458,9 +419,13 @@ func resultHandler(w http.ResponseWriter, r *http.Request) {
 		ingredientList[strings.ToLower(r.FormValue(ingredient))] = Ingredient{r.FormValue(ingredient), r.FormValue(quantity)}
 	}
 
+	// get instructions from form
 	var instructionList []string
 	count, err = strconv.Atoi(r.FormValue("instructionCount"))
-	checkError(err)
+	if err != nil {
+		serveError(w, "Error: Issue retrieving recipe data, try again later.")
+		return
+	}
 	for i := 0; i < count; i++ {
 		instruction := fmt.Sprintf("instruction[%d]", i)
 		instructionList = append(instructionList, r.FormValue(instruction))
@@ -468,8 +433,15 @@ func resultHandler(w http.ResponseWriter, r *http.Request) {
 
 	// get user information
 	cookie, err := r.Cookie("GoRecipeBlog_sessionid")
-	checkError(err)
-	user := users.Lookup(cookie.Value)
+	if err != nil {
+		serveError(w, "Error: Session invalid, try logging in again.")
+		return
+	}
+	user, err := users.Lookup(cookie.Value)
+	if err != nil {
+		serveError(w, "Error: Session invalid, try logging in again.")
+		return
+	}
 
 	// update recipes in memory
 	item := Recipe{Title: r.FormValue("title"),
@@ -488,12 +460,11 @@ func resultHandler(w http.ResponseWriter, r *http.Request) {
 	defer file.Close()
 	data, err := json.MarshalIndent(recipes.Recipes, "", " ")
 	checkError(err)
-	n, err := file.Write(data)
+	_, err = file.Write(data)
 
 	// check write error
 	if err != nil {
-		fmt.Fprintf(w, `<h1>Upload Error - Bytes Written %d, %s</h1>`, n, err)
-		fmt.Fprintf(w, `<a href="http://localhost:8000/blog">-Return to Blog-</a>`)
+		serveError(w, "Error: Server Issue, could not upload recipe. Try again later.")
 		return
 	}
 
@@ -521,11 +492,15 @@ func shoppingListHandler(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "http://localhost:8000/login", http.StatusSeeOther)
 		return
 	}
-	user := users.Lookup(cookie.Value)
+	user, err := users.Lookup(cookie.Value)
+	if err != nil {
+		serveError(w, "Error: Session Invalid, please login again.")
+		return
+	}
 
 	// check that user has recipes in cart, if not serve error page
 	if len(user.ShoppingList) == 0 {
-		fmt.Fprintf(w, `<h1>No Items in Cart</h1>`)
+		serveError(w, "No items in cart.")
 		return
 	}
 
@@ -534,7 +509,7 @@ func shoppingListHandler(w http.ResponseWriter, r *http.Request) {
 	for i := 0; i < len(user.ShoppingList); i++ {
 		recipe, err := recipes.Lookup(user.ShoppingList[i])
 		if err != nil {
-			fmt.Fprintf(w, `<h1>Error: Invalid ID in Shopping Cart</h1>`)
+			serveError(w, "Error: Invalid ID in cart, please login again.")
 			return
 		}
 		items = append(items, recipe)
@@ -553,14 +528,12 @@ func listUpdateHandler(w http.ResponseWriter, r *http.Request) {
 
 	cookie, err := r.Cookie("GoRecipeBlog_sessionid")
 	if err != nil {
-		fmt.Fprintf(w, `<h1>Error: User Session Invalid, cannot add to cart.</h1>`)
+		serveError(w, "Error: Not logged in, cannot add to cart.")
 		return
 	}
 
 	users.UpdateSessionCart(cookie.Value, valuesMap["id"][0])
 
-	test := users.Lookup(cookie.Value)
-	fmt.Printf("IDs in cart:%v\n", test.ShoppingList)
 	fmt.Fprintf(w, `<h1>Shopping Cart Updated</h1>`)
 }
 
@@ -572,4 +545,12 @@ func jsHandler(w http.ResponseWriter, r *http.Request) {
 // serves 'blog.css' file
 func cssHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "blog.css")
+}
+
+func serveError(w http.ResponseWriter, message string) {
+	errorPage, err := template.ParseFiles("error_templ.html")
+	checkError(err)
+
+	err = errorPage.Execute(w, message)
+	checkError(err)
 }
