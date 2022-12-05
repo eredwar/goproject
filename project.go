@@ -47,6 +47,15 @@ type SessionMap struct {
 	Sessions map[string]*Session
 }
 
+// keeps track of the bare bones data of the program for efficiency purposes
+type UserMetrics struct {
+	User string
+	Password string
+}
+
+// new usermetrics global variable
+accUser := UsetMetrics{User: "default8000", Password: "All you're base are ours"}
+
 // looks up Session in SessionMap with ID id, and returns a copy of it
 func (s *SessionMap) Lookup(id string) Session {
 	s.mu.Lock()
