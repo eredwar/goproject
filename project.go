@@ -148,7 +148,6 @@ var serverUser *Session = &Session{User: "None", ID: "00000",
 	ShoppingList: make([]string, 0)}
 
 func main() {
-
 	users.AddSession(&Session{User: "Charlie Edwards", ID: "userID", ShoppingList: make([]string, 0)}) // test value for SessionMap
 	// load in recipes from recipes.json
 	file, err := os.Open("recipes.json")
@@ -271,7 +270,7 @@ func loginVerifyHandler(w http.ResponseWriter, r *http.Request) {
 	
 	rand.Seed(time.Now().UnixNano())
 	sessionID := fmt.Sprint(rand.Intn(90000))
-	username := r.FormValue("username")
+	username := r.FormValue("userName")
 	password := r.FormValue("password")
 	verified := false
 	//check file for username // pseudo code
@@ -280,8 +279,8 @@ func loginVerifyHandler(w http.ResponseWriter, r *http.Request) {
 	checkError(err)
 	rawAccountInfo := strings.Fields(string(scanner))
 	for i := 0; i < len(rawAccountInfo); i++ {
-		if rawAccountInfo[i].contains(r.FormValue(username)) ||
-			rawAccountInfo[i].contains(r.FormValue(password)) {
+		if rawAccountInfo[i].contains(username) ||
+		   rawAccountInfo[i].contains(password) {
 			verified = true
 		}
 	}
@@ -317,7 +316,7 @@ func signupHandler(w http.ResponseWriter, r *http.Request) {
 func signupVerifyHandler(w http.ResponseWriter, r *http.Request) {
 	rand.Seed(time.Now().UnixNano())
 	sessionID := fmt.Sprint(rand.Intn(90000))
-	newUser := false
+	nUser := false
 	username := r.FormValue("username")
 	password := r.FormValue("password")
 	
@@ -329,7 +328,9 @@ func signupVerifyHandler(w http.ResponseWriter, r *http.Request) {
 	checkError(err)
 	defer file.Close()
 	
-	if newUser {
+	for i := 0; i < file.
+	
+	if nUser {
 		cookie := http.Cookie{
 			Name:     "GoRecipeBlog_sessionid",
 			Value:    sessionID,
@@ -345,9 +346,9 @@ func signupVerifyHandler(w http.ResponseWriter, r *http.Request) {
 		http.SetCookie(w, &cookie)
 		http.Redirect(w, r, "https://localhost:8000/blog", http.StatusSeeOther)
 	} else {
-		fmt.Fprintf(w, `<h1>This account does not exist...</h1>
-		<div><a href="https://localhost:8000/login">Try again?</a></div>
-		<div>Don't have an account? Sign up <a href="https://localhost:8000/signup">here</a>.</div>`)
+		fmt.Fprintf(w, `<h1>This account already exists...</h1>
+		<div><a href="https://localhost:8000/signup>Try again?</a></div>
+		<div> Already have an account? Log in <a href="https://localhost:8000/login">here</a>.</div>`)
 	}
 }
 
