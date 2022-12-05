@@ -111,4 +111,7 @@ but the team leader Erik Edwards, is free to submit the current stable state now
 
 <img src="correct_result.PNG" />
 
-
+The only other thing I was thinking of adding at the last minute, was a simple struct that keeps track of the basic user data to make communications with the main
+goroutine easier. This struct would have been called UserMetrics that keep track of the UserName as a string, as well as a Password as a string, and a slice of
+Recipe structs to make verifying the user, easier without having to drop the security that the cookies take care of. Finally, I plan to add a global variable of 
+the type of the UserMetrics struct.
