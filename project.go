@@ -2,13 +2,13 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"html/template"
 	"io/ioutil"
 	"log"
-	"math/rand"
 	"net/http"
 	"net/url"
 	"os"
@@ -16,6 +16,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 // TODO - struct for session ID
@@ -46,15 +48,6 @@ type SessionMap struct {
 	mu       sync.Mutex
 	Sessions map[string]*Session
 }
-
-// keeps track of the bare bones data of the program for efficiency purposes
-type UserMetrics struct {
-	User string
-	Password string
-}
-
-// new usermetrics global variable
-accUser := UsetMetrics{User: "default8000", Password: "All you're base are ours"}
 
 // looks up Session in SessionMap with ID id, and returns a copy of it
 func (s *SessionMap) Lookup(id string) Session {
@@ -158,6 +151,7 @@ var serverUser *Session = &Session{User: "None", ID: "00000",
 
 func main() {
 	users.AddSession(&Session{User: "Charlie Edwards", ID: "userID", ShoppingList: make([]string, 0)}) // test value for SessionMap
+
 	// load in recipes from recipes.json
 	file, err := os.Open("recipes.json")
 	if err != nil {
@@ -174,8 +168,8 @@ func main() {
 	// account management
 	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/signup", signupHandler)
-	http.HandleFunc("/loginVerify", loginVerifyHandler)
-	http.HandleFunc("/signupVerify", signupVerifyHandler)
+	http.HandleFunc("/login/verify", loginVerifyHandler)
+	//http.HandleFunc("/signupVerify", signupVerifyHandler)
 
 	// shopping cart management
 	http.HandleFunc("/grocerylist", shoppingListHandler)
@@ -269,58 +263,73 @@ func recipeHandler(w http.ResponseWriter, r *http.Request) {
 
 // Login handler
 func loginHandler(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "loginTemplate.html")
+	http.ServeFile(w, r, "login_templ.html")
 }
 
 // Login Verification Handler
 func loginVerifyHandler(w http.ResponseWriter, r *http.Request) {
-	file, err := http.ServeFile("login.css")
-	checkError(err)
-	
-	rand.Seed(time.Now().UnixNano())
-	sessionID := fmt.Sprint(rand.Intn(90000))
+	sessionID := uuid.New().String()
 	username := r.FormValue("userName")
 	password := r.FormValue("password")
-	verified := false
-	//check file for username // pseudo code
-	scanner, err := ioutil.ReadFile("accounts.txt")
-	defer scanner.Close()
+
+	//open accounts file storage
+	file, err := os.Open("accounts.txt")
 	checkError(err)
-	rawAccountInfo := strings.Fields(string(scanner))
-	for i := 0; i < len(rawAccountInfo); i++ {
-		if rawAccountInfo[i].contains(username) ||
-		   rawAccountInfo[i].contains(password) {
-			verified = true
+	scanner := bufio.NewScanner(file)
+	defer file.Close()
+
+	// search for username in accounts
+	found := false
+	for scanner.Scan() {
+		currentUsername := scanner.Text()
+		scanner.Scan()
+		if currentUsername == username {
+			currentPassword := scanner.Text()
+			if currentPassword == password {
+				found = true
+				break
+			}
 		}
 	}
 
-	if verified {
-		cookie := http.Cookie{
-			Name:     "GoRecipeBlog_sessionid",
-			Value:    sessionID,
-			Path:     "/",
-			MaxAge:   3600,
-			HttpOnly: true,
-			Secure:   true,
-			SameSite: http.SameSiteLaxMode,
-		}
-
-		newUser := Session{User: username, ID: sessionID, ShoppingList: make([]string, 0)}
-		users.AddSession(*newUser)
-		http.SetCookie(w, &cookie)
-		http.Redirect(w, r, "https://localhost:8000/blog", http.StatusSeeOther)
-	} else {
-		fmt.Fprintf(w, `<h1>This account does not exist...</h1>
-		<div><a href="https://localhost:8000/login">Try again?</a></div>
-		<div>Don't have an account? Sign up <a href="https://localhost:8000/signup">here</a>.</div>`)
+	// return the user if no account is found
+	if !found {
+		fmt.Fprintf(w, `<h1>Username or Password Invalid</h1>
+		<div><a href="http://localhost:8000/login">Try again?</a></div>
+		<div>Don't have an account? Sign up <a href="http://localhost:8000/signup">here</a>.</div>`)
+		return
 	}
+
+	// set session id in users cookies
+	cookie := http.Cookie{
+		Name:     "GoRecipeBlog_sessionid",
+		Value:    sessionID,
+		Path:     "/",
+		MaxAge:   3600,
+		HttpOnly: true,
+		Secure:   true,
+		SameSite: http.SameSiteLaxMode,
+	}
+	http.SetCookie(w, &cookie)
+
+	// add the new session to SessionMap
+	newUser := &Session{
+		User:         username,
+		ID:           sessionID,
+		ShoppingList: make([]string, 0),
+	}
+	users.AddSession(newUser)
+
+	// send the user to the main blog page
+	http.Redirect(w, r, "http://localhost:8000/blog", http.StatusSeeOther)
 }
 
 // Sign Up handler
 func signupHandler(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "signupTemplate.html")
+	http.ServeFile(w, r, "signup_template.html")
 }
 
+/*
 // Sign Up Verification Handler
 func signupVerifyHandler(w http.ResponseWriter, r *http.Request) {
 	rand.Seed(time.Now().UnixNano())
@@ -328,17 +337,17 @@ func signupVerifyHandler(w http.ResponseWriter, r *http.Request) {
 	nUser := false
 	username := r.FormValue("username")
 	password := r.FormValue("password")
-	
+
 	file, err := ioutil.ReadFile("accounts.txt")
 	checkError(err)
-	
+
 	options := os.O_CREATE | os.O_APPEND
 	file, err = os.OpenFile("accounts.txt", options, os.FileMode(0600))
 	checkError(err)
 	defer file.Close()
-	
+
 	for i := 0; i < file.
-	
+
 	if nUser {
 		cookie := http.Cookie{
 			Name:     "GoRecipeBlog_sessionid",
@@ -359,9 +368,7 @@ func signupVerifyHandler(w http.ResponseWriter, r *http.Request) {
 		<div><a href="https://localhost:8000/signup>Try again?</a></div>
 		<div> Already have an account? Log in <a href="https://localhost:8000/login">here</a>.</div>`)
 	}
-}
-
-// http://localhost:8000/blog?title=pizza
+} */
 
 // serves a /blog page with a list of all Recipes in recipes. If query terms are in URL
 // it generates a /blog page with only Recipes that match the query
