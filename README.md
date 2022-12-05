@@ -109,6 +109,6 @@ This is just a note from me, Aaron Haas that while the site is not the most secu
 Below is an image that shows the addition of a custom recipe for Kiwi Cake. My username by the way is "ThePancakeDwarf". I still need to finish some wrap arounds
 but the team leader Erik Edwards, is free to submit the current stable state now if he would like to since it is due tonight.
 
-<img src="correct_results.png" />
+<img src="correct_result.PNG" />
 
 
