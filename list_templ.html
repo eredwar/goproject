@@ -18,12 +18,10 @@
           </thead>
           <tbody>
             {{range .}}
-            {{range .Ingredients}}
             <tr>
             <td>{{.Name}}</td>
             <td>{{.Quantity}}</td>
         </tr>
-        {{end}}
         {{end}}
         </tbody>
         </table>

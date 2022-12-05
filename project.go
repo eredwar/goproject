@@ -24,7 +24,7 @@ import (
 type Session struct {
 	User         string
 	ID           string
-	ShoppingList []string
+	ShoppingList map[string]Ingredient
 }
 
 // struct representing a recipe item
@@ -74,12 +74,28 @@ func (s *SessionMap) RemoveSession(id string) {
 	delete(s.Sessions, id)
 }
 
-// finds Session
-func (s *SessionMap) UpdateSessionCart(id string, recipeID string) {
+// finds Session and add ingredients to its shopping cart
+func (s *SessionMap) UpdateSessionCart(id string, recipeID string) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	user := s.Sessions[id]
-	user.ShoppingList = append(user.ShoppingList, recipeID)
+	recipe, err := recipes.Lookup(recipeID)
+	if err != nil {
+		return err
+	}
+	for name, ingredient := range recipe.Ingredients {
+		// if the ingredient is already in the cart, add more to its quantity
+		if val, ok := user.ShoppingList[name]; ok {
+			i := Ingredient{Name: val.Name,
+				Quantity: fmt.Sprintf("%s, %s", val.Quantity, ingredient.Quantity),
+			}
+			user.ShoppingList[name] = i
+			// else add it to to the list
+		} else {
+			user.ShoppingList[name] = ingredient
+		}
+	}
+	return nil
 }
 
 // holds all the active user sessions in memory
@@ -270,7 +286,7 @@ func loginVerifyHandler(w http.ResponseWriter, r *http.Request) {
 	newUser := &Session{
 		User:         username,
 		ID:           sessionID,
-		ShoppingList: make([]string, 0),
+		ShoppingList: make(map[string]Ingredient),
 	}
 	users.AddSession(newUser)
 
@@ -335,7 +351,7 @@ func signupVerifyHandler(w http.ResponseWriter, r *http.Request) {
 	newUser := &Session{
 		User:         username,
 		ID:           sessionID,
-		ShoppingList: make([]string, 0),
+		ShoppingList: make(map[string]Ingredient),
 	}
 	users.AddSession(newUser)
 
@@ -500,19 +516,8 @@ func shoppingListHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// get the recipes
-	var items []Recipe
-	for i := 0; i < len(user.ShoppingList); i++ {
-		recipe, err := recipes.Lookup(user.ShoppingList[i])
-		if err != nil {
-			serveError(w, "Error: Invalid ID in cart, please login again.")
-			return
-		}
-		items = append(items, recipe)
-	}
-
 	// serve page
-	err = shoppingPage.Execute(w, items)
+	err = shoppingPage.Execute(w, user.ShoppingList)
 	checkError(err)
 }
 
@@ -525,6 +530,12 @@ func listUpdateHandler(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("GoRecipeBlog_sessionid")
 	if err != nil {
 		serveError(w, "Error: Not logged in, cannot add to cart.")
+		return
+	}
+
+	_, err = users.Lookup(cookie.Value)
+	if err != nil {
+		serveError(w, "Error: Invalid Session, cannot add to cart.")
 		return
 	}
 
