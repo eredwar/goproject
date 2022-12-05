@@ -250,9 +250,7 @@ func loginVerifyHandler(w http.ResponseWriter, r *http.Request) {
 
 	// return the user if no account is found
 	if !found {
-		fmt.Fprintf(w, `<h1>Username or Password Invalid</h1>
-		<div><a href="http://localhost:8000/login">Try again?</a></div>
-		<div>Don't have an account? Sign up <a href="http://localhost:8000/signup">here</a>.</div>`)
+		http.ServeFile(w, r, "login_verify_templ.html")
 		return
 	}
 
@@ -311,9 +309,7 @@ func signupVerifyHandler(w http.ResponseWriter, r *http.Request) {
 
 	// if the username exists, send the user an error message
 	if found {
-		fmt.Fprintf(w, `<h1>This account already exists...</h1>
-		<div><a href="http://localhost:8000/signup>Try again?</a></div>
-		<div> Already have an account? Log in <a href="http://localhost:8000/login">here</a>.</div>`)
+		http.ServeFile(w, r, "signup_verify_templ.html")
 		return
 	}
 
