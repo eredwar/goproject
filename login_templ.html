@@ -1,9 +1,27 @@
-<h1>Login to RecipeList</h1>
+<head>
+	<title>Login</title>
+	<link rel="stylesheet" href="http://localhost:8000/blog.css">
+    <hr>
+    <h1>Login to Recipe Blog</h1> 
+    <hr> 
+</head>
+<body>
+	<div id="switch_message">Don't have account? <a href="/signup">Sign up</a></div>
 	<form action="/login/verify" method="POST">
-		<div>Username: <input type="text" name="userName"></div>
-		<div><input type="hidden" name="login" value="true"></div>
-		<div>Password: <input type="text" name="password"></div> 
-		<div><input type="hidden" name="sessionID" value="` + sessionID + `"></div>
-		<div><input type="submit"></div>
+		<table id="login_table">
+			<thead>
+				<tr>
+					<th>Username</th>
+					<th><input type="text" name="userName"></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<th>Password</th>
+					<th><input type="text" name="password"></th>
+				</tr>
+			</tbody>
+		</table>
+		<div id="login_container"><button class="login_button" type="submit">Submit</div>
 	</form>
-	<div>Don't have account? <a href="/signup">Sign up</a>.</div>
+</body>

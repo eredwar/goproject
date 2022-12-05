@@ -47,9 +47,8 @@ table {
     margin-right: auto;
     margin-top: 100px;
     border-collapse: collapse;
-    /*min-width: 400px;
-    box-shadow: 0px 7px 0 rgb(128, 68, 0);*/
-    text-align: left
+    text-align: left;
+    border: thin solid #832300;
 }
 
 table thead tr {
@@ -63,17 +62,13 @@ table td {
     padding: 12px 15px;
 }
 
-table tbody tr {
-    border-bottom: thin solid #dddddd;
-}
+
 
 table tbody tr:nth-of-type(even) {
     background-color: #f3f3f3;
 }
 
-table tbody tr:last-of-type {
-    border-bottom: thin solid rgb(255, 161, 53);
-}
+
 
 button {
     background-color: #9F2B00;
@@ -164,4 +159,29 @@ button:active {
 .result_buttons {
     margin: 0 auto;
     width: 440px;
+}
+
+#login_table {
+    margin-top: 10px;
+    border: thin solid #832300;
+}
+
+#login_table tbody tr {
+    background-color: #f3f3f3;
+}
+
+#login_container {
+    margin: auto;
+    width: 285px;
+    padding-top: 5px;
+}
+
+.login_button {
+    display: block;
+    float: right;
+    width: 180;
+}
+
+#switch_message {
+    text-align: center;
 }

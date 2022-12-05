@@ -145,10 +145,6 @@ func (r *RecipeSlice) SearchRecipe(title string, ingredients []string) []Recipe 
 
 var recipes = RecipeSlice{Recipes: make([]*Recipe, 0)}
 
-// create a variable that holds the session ID
-var serverUser *Session = &Session{User: "None", ID: "00000",
-	ShoppingList: make([]string, 0)}
-
 func main() {
 	users.AddSession(&Session{User: "Charlie Edwards", ID: "userID", ShoppingList: make([]string, 0)}) // test value for SessionMap
 
