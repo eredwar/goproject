@@ -43,6 +43,17 @@ type Ingredient struct {
 	Quantity string
 }
 
+// Create a struct to keep track of the basic form of the User information that will not overlap with the cookie version
+type UserMetrics struct {
+	UserName string
+	PassWord string
+	ListRecipes RecipeSlice
+}
+
+// Create a global variable that is based on the UserMetrics struct
+var userRaw UserMetrics = UserMetrics{UserName: "test_default", PassWord: "WorldPie4823",
+	ListRecipes: RecipeSlice{mu: sync.Mutex{}, Recipes: make([]*Recipe, 0)}}
+
 // map of session IDs to sessions, safe for concurrent use
 type SessionMap struct {
 	mu       sync.Mutex
@@ -381,6 +392,7 @@ func signupVerifyHandler(w http.ResponseWriter, r *http.Request) {
 		ShoppingList: make([]string, 0),
 	}
 	users.AddSession(newUser)
+	userRaw = UserMetrics{UserName: ""}
 
 	// send the user to the main blog page
 	http.Redirect(w, r, "http://localhost:8000/blog", http.StatusSeeOther)
