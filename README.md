@@ -103,3 +103,15 @@ func (s *SessionMap) UpdateSessionCart(id string, recipeID string) {
 	user.ShoppingList = append(user.ShoppingList, recipeID)
 }
 ```
+
+## Final Update (12/05/2022)
+This is just a note from me, Aaron Haas that while the site is not the most secure for testing purposes, it works, it is stable, and it is presentable. 
+Below is an image that shows the addition of a custom recipe for Kiwi Cake. My username by the way is "ThePancakeDwarf". I still need to finish some wrap arounds
+but the team leader Erik Edwards, is free to submit the current stable state now if he would like to since it is due tonight.
+
+<img src="correct_result.PNG" />
+
+The only other thing I was thinking of adding at the last minute, was a simple struct that keeps track of the basic user data to make communications with the main
+goroutine easier. This struct would have been called UserMetrics that keep track of the UserName as a string, as well as a Password as a string, and a slice of
+Recipe structs to make verifying the user, easier without having to drop the security that the cookies take care of. Finally, I plan to add a global variable of 
+the type of the UserMetrics struct.
