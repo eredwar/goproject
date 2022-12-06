@@ -367,7 +367,13 @@ func blogHandler(w http.ResponseWriter, r *http.Request) {
 	checkError(err)
 	// Parsing blog template
 	w.Header().Set("Content-Type", "text/html")
-	blogPage, err := template.ParseFiles("blog_templ.html")
+
+	revFunc := template.FuncMap{"reverseSlice": func(index, length int) int {
+		return length - index - 1
+	},
+	}
+
+	blogPage, err := template.New("blog_templ.html").Funcs(revFunc).ParseFiles("blog_templ.html")
 	checkError(err)
 
 	// parse URL for search

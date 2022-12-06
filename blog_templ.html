@@ -23,12 +23,13 @@
     </tr>
     </thead>
     <tbody>
-    {{range .}}
+    {{range $i, $v := .}}
     <tr>
-      <td><a href='http://localhost:8000/recipe?id={{.ID}}'>{{.Title}}</a></td>
-      <td>{{.Author}}</td>
-      <td>{{.Date}}</td>
-      <td><button class="add_to_cart" type="button" onclick="updateCart({{.ID}})">Add to Grocery List</button></td>
+      {{$item := index $ (reverseSlice $i (len $))}}
+      <td><a href='http://localhost:8000/recipe?id={{.ID}}'>{{$item.Title}}</a></td>
+      <td>{{$item.Author}}</td>
+      <td>{{$item.Date}}</td>
+      <td><button class="add_to_cart" type="button" onclick="updateCart({{$item.ID}})">Add to Grocery List</button></td>
     </tr>
     {{end}}
     </tbody>
