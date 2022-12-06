@@ -1,310 +1,539 @@
 [
  {
-  "Title": "Pizza",
+  "Title": "French Omelette",
   "ID": "0",
-  "Author": "Charlie Edwards",
+  "Author": "eredwar",
+  "Date": "11/29/2022",
+  "Ingredients": {
+   "eggs": {
+    "Name": "Eggs",
+    "Quantity": "3"
+   },
+   "parsley": {
+    "Name": "Parsley",
+    "Quantity": ""
+   },
+   "salt": {
+    "Name": "Salt",
+    "Quantity": "A pinch"
+   },
+   "unsalted butter": {
+    "Name": "Unsalted Butter",
+    "Quantity": "1 Tbsp"
+   },
+   "white pepper": {
+    "Name": "White Pepper",
+    "Quantity": "A pinch"
+   }
+  },
+  "Instructions": [
+   "Beat the eggs and whisk in medium bowl.",
+   "Melt the butter.",
+   "Pour the eggs into the pan. With the bowl of a fork, tines facing up, rapidly stir the eggs.",
+   "Move the fork all around the pan to break up the eggs as they cook.",
+   " At the same time, hold the handle of the pan with the other hand and vigorously shake the pan back and forth.",
+   "Remove the pan from the heat. Run the fork around the edges to release the eggs.",
+   " Tilt the pan to a 45-degree angle so that the eggs move to one side of the pan.",
+   "Tilt a plate right next to the omelette and tip it onto the plate so the seam is on the bottom.",
+   "Sprinkle with chives or parsley, if you'd like, and serve."
+  ]
+ },
+ {
+  "Title": "Chilaquiles",
+  "ID": "1",
+  "Author": "eredwar",
+  "Date": "11/29/2022",
+  "Ingredients": {
+   "cheese": {
+    "Name": "Cheese",
+    "Quantity": ""
+   },
+   "chicken stock": {
+    "Name": "Chicken Stock",
+    "Quantity": "2 Cups"
+   },
+   "cilantro": {
+    "Name": "Cilantro",
+    "Quantity": ""
+   },
+   "corn tortillas or tortilla chips": {
+    "Name": "Corn Tortillas or Tortilla Chips",
+    "Quantity": ""
+   },
+   "eggs": {
+    "Name": "Eggs",
+    "Quantity": ""
+   },
+   "neutral oil": {
+    "Name": "Neutral Oil",
+    "Quantity": ""
+   },
+   "red onion": {
+    "Name": "Red Onion",
+    "Quantity": "1"
+   },
+   "salsa": {
+    "Name": "Salsa",
+    "Quantity": "2 Cups"
+   },
+   "salt": {
+    "Name": "Salt",
+    "Quantity": ""
+   }
+  },
+  "Instructions": [
+   "If using tortillas, cut and fry them in the oil.",
+   "Combine the salsa and stock in a pan on medium heat and reduce until desired thickness.",
+   "Add the tortilla chips back in, and reduce heat to low.",
+   "After the tortilla chips reach desired consistency, turn off the heat and plate.",
+   "Add toppings as desired."
+  ]
+ },
+ {
+  "Title": "Shakshuka",
+  "ID": "2",
+  "Author": "eredwar",
+  "Date": "12/01/2022",
+  "Ingredients": {
+   "can whole peeled tomatoes": {
+    "Name": "Can Whole Peeled Tomatoes",
+    "Quantity": "28 Ounces"
+   },
+   "chili powder": {
+    "Name": "Chili Powder",
+    "Quantity": "Quarter Teaspoon"
+   },
+   "cilantro": {
+    "Name": "Cilantro",
+    "Quantity": "1 Small Bunch"
+   },
+   "cumin": {
+    "Name": "Cumin",
+    "Quantity": "1 Teaspoon"
+   },
+   "eggs": {
+    "Name": "Eggs",
+    "Quantity": "6"
+   },
+   "garlic": {
+    "Name": "Garlic",
+    "Quantity": "4 Cloves"
+   },
+   "olive oil": {
+    "Name": "Olive Oil",
+    "Quantity": "2 Tablespoons"
+   },
+   "onion": {
+    "Name": "Onion",
+    "Quantity": "1 Medium"
+   },
+   "paprika": {
+    "Name": "Paprika",
+    "Quantity": "2 Teaspoons"
+   },
+   "parsley": {
+    "Name": "Parsley",
+    "Quantity": "1 Small Bunch"
+   },
+   "pepper": {
+    "Name": "Pepper",
+    "Quantity": ""
+   },
+   "red bell pepper": {
+    "Name": "Red Bell Pepper",
+    "Quantity": "1"
+   },
+   "salt": {
+    "Name": "Salt",
+    "Quantity": ""
+   }
+  },
+  "Instructions": [
+   "Heat olive oil in large pan on medium heat.",
+   "Add veggies and cook for 5 minutes.",
+   "Add garlic and spices and cook for an additional minute.",
+   "Pour the can of tomatoes and juice into the pan.",
+   "Add salt and pepper to taste, then bring sauce down to a simmer.",
+   "Use a spoon to make large wells for the eggs. Pour the eggs in then let them cook.",
+   "Cover the pan for 5-8 minutes.",
+   "Serve!"
+  ]
+ },
+ {
+  "Title": "Homemade Pizza",
+  "ID": "3",
+  "Author": "eredwar",
+  "Date": "12/01/2022",
+  "Ingredients": {
+   "cheese": {
+    "Name": "Cheese",
+    "Quantity": "8 Oz"
+   },
+   "olive oil": {
+    "Name": "Olive Oil",
+    "Quantity": "1 Tbsp"
+   },
+   "parmesan cheese": {
+    "Name": "Parmesan Cheese",
+    "Quantity": "2 Tbsp"
+   },
+   "pepperoni": {
+    "Name": "Pepperoni",
+    "Quantity": "2.5 Oz"
+   },
+   "pizza dough": {
+    "Name": "Pizza Dough",
+    "Quantity": "16 Oz"
+   },
+   "pizza sauce": {
+    "Name": "Pizza Sauce",
+    "Quantity": "1 Cup"
+   }
+  },
+  "Instructions": [
+   "Preheat a pizza stone in oven at 550 F.",
+   "Rub work surface down with flour.",
+   "Roll out pizza dough.",
+   "Add sauce.",
+   "Add cheese and pepperoni.",
+   "Sprinkle parmesan cheese on top.",
+   "Bake pizza for 8-12 minutes.",
+   "Remove from rack, and let cool."
+  ]
+ },
+ {
+  "Title": "NYC Style Pizza",
+  "ID": "4",
+  "Author": "eredwar",
   "Date": "12/02/2022",
   "Ingredients": {
    "cheese": {
     "Name": "Cheese",
+    "Quantity": "8 Oz"
+   },
+   "olive oil": {
+    "Name": "Olive Oil",
+    "Quantity": "1 Tbsp"
+   },
+   "parmesan cheese": {
+    "Name": "Parmesan Cheese",
+    "Quantity": "2 Tbsp"
+   },
+   "pepperoni": {
+    "Name": "Pepperoni",
+    "Quantity": "2.5 Oz"
+   },
+   "pizza dough": {
+    "Name": "Pizza Dough",
+    "Quantity": "16 Oz"
+   },
+   "pizza sauce": {
+    "Name": "Pizza Sauce",
     "Quantity": "1 Cup"
    },
-   "dough": {
-    "Name": "Dough",
-    "Quantity": "Enough"
+   "sardines": {
+    "Name": "Sardines",
+    "Quantity": "1 Tin"
    }
   },
   "Instructions": [
-   "Make it"
+   "Preheat a pizza stone in oven at 450 F.",
+   "Rub work surface down with flour.",
+   "Roll out pizza dough even further.",
+   "Add sauce.",
+   "Add cheese, pepperoni, and sardines.",
+   "Sprinkle parmesan cheese on top.",
+   "Bake pizza for 8-12 minutes.",
+   "Remove from rack, and let cool."
   ]
  },
  {
-  "Title": "Bread",
-  "ID": "1",
-  "Author": "Charlie Edwards",
-  "Date": "12/02/2022",
-  "Ingredients": {
-   "dough": {
-    "Name": "Dough",
-    "Quantity": "A lot"
-   }
-  },
-  "Instructions": [
-   "Make it"
-  ]
- },
- {
-  "Title": "pie",
-  "ID": "2",
-  "Author": "Charlie Edwards",
-  "Date": "12/02/2022",
-  "Ingredients": {
-   "dough": {
-    "Name": "DoUgh",
-    "Quantity": "dough"
-   }
-  },
-  "Instructions": [
-   "cook it"
-  ]
- },
- {
-  "Title": "Water",
-  "ID": "3",
-  "Author": "Charlie Edwards",
+  "Title": "Vegan Pizza",
+  "ID": "5",
+  "Author": "eredwar",
   "Date": "12/03/2022",
   "Ingredients": {
-   "h": {
-    "Name": "H",
-    "Quantity": "2"
+   "cheese": {
+    "Name": "Cheese",
+    "Quantity": "8 Oz"
    },
-   "o": {
-    "Name": "O",
-    "Quantity": "1"
+   "eggplant": {
+    "Name": "Eggplant",
+    "Quantity": "1 Whole"
+   },
+   "olive oil": {
+    "Name": "Olive Oil",
+    "Quantity": "1 Tbsp"
+   },
+   "parmesan cheese": {
+    "Name": "Parmesan Cheese",
+    "Quantity": "2 Tbsp"
+   },
+   "pizza dough": {
+    "Name": "Pizza Dough",
+    "Quantity": "16 Oz"
+   },
+   "pizza sauce": {
+    "Name": "Pizza Sauce",
+    "Quantity": "1 Cup"
    }
   },
   "Instructions": [
-   "Chemistry"
+   "Preheat a pizza stone in oven at 450 F.",
+   "Rub work surface down with flour.",
+   "Roll out pizza dough.",
+   "Add sauce.",
+   "Slice eggplant.",
+   "Add cheese and eggplant slices.",
+   "Sprinkle parmesan cheese on top.",
+   "Bake pizza for 8-12 minutes.",
+   "Remove from rack, and let cool."
   ]
  },
  {
-  "Title": "Pickles",
-  "ID": "4",
-  "Author": "Charlie Edwards",
-  "Date": "12/04/2022",
+  "Title": "Chicken Scarpariello",
+  "ID": "6",
+  "Author": "eredwar",
+  "Date": "12/03/2022",
   "Ingredients": {
-   "cucumbers": {
-    "Name": "Cucumbers",
-    "Quantity": "5"
+   "chicken": {
+    "Name": "Chicken",
+    "Quantity": "6 Thighs"
+   },
+   "chicken stock": {
+    "Name": "Chicken Stock",
+    "Quantity": "1 Cup"
+   },
+   "garlic": {
+    "Name": "Garlic",
+    "Quantity": "6 Cloves"
+   },
+   "italian sausage": {
+    "Name": "Italian Sausage",
+    "Quantity": "3 Links"
+   },
+   "olive oil": {
+    "Name": "Olive Oil",
+    "Quantity": "6 Tablespoons"
+   },
+   "onions": {
+    "Name": "Onions",
+    "Quantity": "2"
+   },
+   "pickled cherry peppers": {
+    "Name": "Pickled Cherry Peppers",
+    "Quantity": "Half Cup"
+   },
+   "potatoes": {
+    "Name": "Potatoes",
+    "Quantity": "1.5 Pounds"
+   },
+   "rosemary": {
+    "Name": "Rosemary",
+    "Quantity": "3 Sprigs"
    },
    "salt": {
     "Name": "Salt",
-    "Quantity": "A lot"
+    "Quantity": ""
    },
-   "vinegar": {
-    "Name": "Vinegar",
+   "white wine": {
+    "Name": "White Wine",
     "Quantity": "1 Cup"
+   },
+   "white wine vinegar": {
+    "Name": "White Wine Vinegar",
+    "Quantity": "Quarter Cup"
    }
   },
   "Instructions": [
-   "Add them together.",
-   "Boil them."
+   "Add the oil, and brown the sausage and chicken in a dutch oven on medium-high heat.",
+   "Take out the meat, sautee the onions and garlic.",
+   "Add in the stock, wine, and vinegar, reduce by half.",
+   "Add in the peppers, rosemary, and the meat.",
+   "Reduce the sauce to a simmer and cook for half an hour.",
+   "Turn off the heat, and serve with the potatoes."
   ]
  },
  {
-  "Title": "Test",
-  "ID": "5",
-  "Author": "Charlie Edwards",
-  "Date": "12/04/2022",
-  "Ingredients": {
-   "test": {
-    "Name": "Test",
-    "Quantity": "Test"
-   }
-  },
-  "Instructions": [
-   "Test"
-  ]
- },
- {
-  "Title": "Test 2",
-  "ID": "6",
-  "Author": "Charlie Edwards",
-  "Date": "12/04/2022",
-  "Ingredients": {
-   "": {
-    "Name": "",
-    "Quantity": ""
-   }
-  },
-  "Instructions": [
-   ""
-  ]
- },
- {
-  "Title": "Test3",
+  "Title": "Ratatouille",
   "ID": "7",
-  "Author": "Charlie Edwards",
+  "Author": "eredwar",
   "Date": "12/04/2022",
   "Ingredients": {
-   "": {
-    "Name": "",
-    "Quantity": ""
-   }
-  },
-  "Instructions": [
-   ""
-  ]
- },
- {
-  "Title": "Testing",
-  "ID": "8",
-  "Author": "erik",
-  "Date": "12/05/2022",
-  "Ingredients": {
-   "testing": {
-    "Name": "Testing",
-    "Quantity": "Testing"
-   }
-  },
-  "Instructions": [
-   "Testing"
-  ]
- },
- {
-  "Title": "test",
-  "ID": "9",
-  "Author": "poco",
-  "Date": "12/05/2022",
-  "Ingredients": {
-   "test": {
-    "Name": "test",
-    "Quantity": "test"
-   }
-  },
-  "Instructions": [
-   "test"
-  ]
- },
- {
-  "Title": "tset",
-  "ID": "10",
-  "Author": "poco",
-  "Date": "12/05/2022",
-  "Ingredients": {
-   "test": {
-    "Name": "test",
-    "Quantity": ""
-   }
-  },
-  "Instructions": [
-   ""
-  ]
- },
- {
-  "Title": "test",
-  "ID": "11",
-  "Author": "erik",
-  "Date": "12/05/2022",
-  "Ingredients": {
-   "test": {
-    "Name": "test",
-    "Quantity": ""
-   }
-  },
-  "Instructions": [
-   ""
-  ]
- },
- {
-  "Title": "test",
-  "ID": "12",
-  "Author": "poco",
-  "Date": "12/05/2022",
-  "Ingredients": {
-   "": {
-    "Name": "",
-    "Quantity": ""
-   }
-  },
-  "Instructions": [
-   ""
-  ]
- },
- {
-  "Title": "test",
-  "ID": "13",
-  "Author": "testing",
-  "Date": "12/05/2022",
-  "Ingredients": {
-   "": {
-    "Name": "",
-    "Quantity": ""
-   }
-  },
-  "Instructions": [
-   ""
-  ]
- },
- {
-  "Title": "test",
-  "ID": "14",
-  "Author": "poco",
-  "Date": "12/05/2022",
-  "Ingredients": {
-   "": {
-    "Name": "",
-    "Quantity": ""
-   }
-  },
-  "Instructions": [
-   ""
-  ]
- },
- {
-  "Title": "omegatest",
-  "ID": "15",
-  "Author": "poco",
-  "Date": "12/05/2022",
-  "Ingredients": {
-   "boneless skinless chicken breast": {
-    "Name": "boneless skinless chicken breast",
-    "Quantity": ""
-   }
-  },
-  "Instructions": [
-   ""
-  ]
- },
- {
-  "Title": "Pocos Treats",
-  "ID": "16",
-  "Author": "poco",
-  "Date": "12/05/2022",
-  "Ingredients": {
-   "really any human food": {
-    "Name": "Really any human food",
-    "Quantity": "All of it"
-   }
-  },
-  "Instructions": [
-   "Just give it to me"
-  ]
- },
- {
-  "Title": "Burned Food",
-  "ID": "17",
-  "Author": "nikki",
-  "Date": "12/05/2022",
-  "Ingredients": {
-   "": {
-    "Name": "",
+   "can of crushed tomatoes": {
+    "Name": "Can of crushed tomatoes",
+    "Quantity": "28 Oz"
+   },
+   "eggplant": {
+    "Name": "Eggplant",
+    "Quantity": "2"
+   },
+   "fresh basil": {
+    "Name": "Fresh Basil",
     "Quantity": ""
    },
-   "any food": {
-    "Name": "Any food",
-    "Quantity": "Just a small amount"
+   "garlic": {
+    "Name": "Garlic",
+    "Quantity": "4 Cloves"
+   },
+   "olive oil": {
+    "Name": "Olive Oil",
+    "Quantity": "2 Tablespoons"
+   },
+   "pepper": {
+    "Name": "Pepper",
+    "Quantity": ""
+   },
+   "roma tomatoes": {
+    "Name": "Roma tomatoes",
+    "Quantity": "6"
+   },
+   "salt": {
+    "Name": "Salt",
+    "Quantity": ""
+   },
+   "yellow squash": {
+    "Name": "Yellow squash",
+    "Quantity": "2"
+   },
+   "zucchini": {
+    "Name": "Zucchini",
+    "Quantity": "2"
    }
   },
   "Instructions": [
-   "Cook it to long",
-   "",
-   ""
+   "Acquire a small rat.",
+   "Place it under your hat."
   ]
  },
  {
-  "Title": "test",
-  "ID": "18",
-  "Author": "poco",
+  "Title": "Japanese Style Curry",
+  "ID": "8",
+  "Author": "eredwar",
   "Date": "12/05/2022",
   "Ingredients": {
-   "": {
-    "Name": "",
+   "apple": {
+    "Name": "Apple",
+    "Quantity": "Half"
+   },
+   "carrots": {
+    "Name": "Carrots",
+    "Quantity": "2"
+   },
+   "chicken": {
+    "Name": "Chicken",
+    "Quantity": "1.5 pounds of thighs"
+   },
+   "cooked short grain rice": {
+    "Name": "Cooked Short Grain Rice",
+    "Quantity": "8 Servings"
+   },
+   "garlic": {
+    "Name": "Garlic",
+    "Quantity": "2 Cloves"
+   },
+   "ginger": {
+    "Name": "Ginger",
+    "Quantity": "1 Knob"
+   },
+   "honey": {
+    "Name": "Honey",
+    "Quantity": "1 Tbsp"
+   },
+   "japanese curry roux": {
+    "Name": "Japanese Curry Roux",
+    "Quantity": "8 Oz"
+   },
+   "onions": {
+    "Name": "Onions",
+    "Quantity": "2"
+   },
+   "pepper": {
+    "Name": "Pepper",
     "Quantity": ""
+   },
+   "potatoes": {
+    "Name": "Potatoes",
+    "Quantity": "3 Yukon Gold"
+   },
+   "salt": {
+    "Name": "Salt",
+    "Quantity": "Quarter Teaspoon"
+   },
+   "soy sauce": {
+    "Name": "Soy Sauce",
+    "Quantity": "1 Tbsp"
    }
   },
   "Instructions": [
-   ""
+   "Prepare the vegetables. Peel and quarter them.",
+   "Grate the ginger and garlic.",
+   "Heat the oil in a large skillet.",
+   "Dice the chicken, and brown it in the hot oil.",
+   "Add in the onions and cook until translucent.",
+   "Add in the garlic and ginger and cook until fragrant.",
+   "Add in the stock and other liquid ingredients.",
+   "Add in the roux.",
+   "Simmer, covered, for 15 minutes. Occasionally stirring.",
+   "Let cool, and serve with rice."
+  ]
+ },
+ {
+  "Title": "Paneer Korna",
+  "ID": "9",
+  "Author": "eredwar",
+  "Date": "12/05/2022",
+  "Ingredients": {
+   "carrot": {
+    "Name": "Carrot",
+    "Quantity": "2"
+   },
+   "garlic": {
+    "Name": "Garlic",
+    "Quantity": "4 Cloves"
+   },
+   "ghee": {
+    "Name": "Ghee",
+    "Quantity": "4 Tbsp"
+   },
+   "korna spice blend": {
+    "Name": "Korna Spice Blend",
+    "Quantity": ""
+   },
+   "onion": {
+    "Name": "Onion",
+    "Quantity": "2"
+   },
+   "paneer cheese": {
+    "Name": "Paneer Cheese",
+    "Quantity": "200 g"
+   },
+   "pepper": {
+    "Name": "Pepper",
+    "Quantity": "2 Diced"
+   },
+   "red onion": {
+    "Name": "Red Onion",
+    "Quantity": "1"
+   },
+   "salt": {
+    "Name": "Salt",
+    "Quantity": ""
+   },
+   "veggie stock": {
+    "Name": "Veggie Stock",
+    "Quantity": "500 ml"
+   }
+  },
+  "Instructions": [
+   "Set frying pan on medium heat.",
+   "Add 2 tbsp of ghee followed by onions, garlic, and carrots. Cook until soft.",
+   "Add a good pinch of salt and Korna spice blend.",
+   "Transer everything to a pot, and add veggie stock.",
+   "Roast red onions, paneer, and peppers separately in ghee in oven at 220 C.",
+   "Blend the sauce with an immersion blender.",
+   "Combine sauce with roasted vegetables and cheese.",
+   "Serve!"
   ]
  }
 ]

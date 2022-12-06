@@ -86,8 +86,14 @@ func (s *SessionMap) UpdateSessionCart(id string, recipeID string) error {
 	for name, ingredient := range recipe.Ingredients {
 		// if the ingredient is already in the cart, add more to its quantity
 		if val, ok := user.ShoppingList[name]; ok {
+			q := val.Quantity
+			if q == "" {
+				q = ingredient.Quantity
+			} else {
+				q = fmt.Sprintf("%s, %s", val.Quantity, ingredient.Quantity)
+			}
 			i := Ingredient{Name: val.Name,
-				Quantity: fmt.Sprintf("%s, %s", val.Quantity, ingredient.Quantity),
+				Quantity: q,
 			}
 			user.ShoppingList[name] = i
 			// else add it to to the list
