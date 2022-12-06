@@ -181,6 +181,7 @@ func main() {
 	// account management
 	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/signup", signupHandler)
+	http.HandleFunc("/logout", logoutHandler)
 	http.HandleFunc("/login/verify", loginVerifyHandler)
 	http.HandleFunc("/signup/verify", signupVerifyHandler)
 
@@ -236,6 +237,38 @@ func recipeHandler(w http.ResponseWriter, r *http.Request) {
 // Login handler
 func loginHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "login_templ.html")
+}
+
+// Login Verification Handler
+func logoutHandler(w http.ResponseWriter, r *http.Request) {
+	// get user information
+	cookie, err := r.Cookie("GoRecipeBlog_sessionid")
+	if err != nil {
+		serveError(w, "Error: Already logged out.")
+		return
+	}
+	user, err := users.Lookup(cookie.Value)
+	if err != nil {
+		serveError(w, "Error: Session timed out already.")
+		return
+	}
+
+	// set session id in users cookies
+	deleteCookie := http.Cookie{
+		Name:     "GoRecipeBlog_sessionid",
+		Value:    "",
+		Path:     "/",
+		MaxAge:   -1,
+		HttpOnly: true,
+		Secure:   true,
+		SameSite: http.SameSiteLaxMode,
+	}
+	http.SetCookie(w, &deleteCookie)
+
+	users.RemoveSession(user.ID)
+
+	// send the user to the main blog page
+	http.Redirect(w, r, "http://localhost:8000/login", http.StatusSeeOther)
 }
 
 // Login Verification Handler
@@ -391,16 +424,32 @@ func blogHandler(w http.ResponseWriter, r *http.Request) {
 		search = true
 	}
 
+	// get user information
+	found := true // found a cookie
+	cookie, err := r.Cookie("GoRecipeBlog_sessionid")
+	if err != nil {
+		found = false
+	}
+
+	// set up info to be passed to template
+	pageInfo := map[string]interface{}{}
+
+	if found {
+		user, err := users.Lookup(cookie.Value)
+		if err == nil {
+			pageInfo["user"] = user
+		}
+	}
+
 	// if the URL contained search terms, serve the specialized /blog page
 	if search {
-		results := recipes.SearchRecipe(title, ingredients)
-		err = blogPage.Execute(w, results)
-		checkError(err)
+		pageInfo["recipes"] = recipes.SearchRecipe(title, ingredients)
 	} else {
-		// otherwise serve the default /blog page
-		err = blogPage.Execute(w, recipes.Recipes)
-		checkError(err)
+		pageInfo["recipes"] = recipes.Recipes
 	}
+
+	err = blogPage.Execute(w, pageInfo)
+	checkError(err)
 }
 
 // serves static upload page to /upload

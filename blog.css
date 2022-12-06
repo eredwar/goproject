@@ -204,3 +204,10 @@ button:active {
 #verify_wrapper {
     text-align: center;
 }
+
+#user_info {
+    display: inline-block;
+    text-align: left;
+    margin-top: 30px;
+    margin-bottom: -50px;
+}

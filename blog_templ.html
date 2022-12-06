@@ -13,6 +13,11 @@
     <a class="site_function" href="http://localhost:8000/grocerylist">View Grocery List</a>
     <a class="site_function" href="http://localhost:8000/search">Search for Recipes</a>
     </div>
+    {{if .user}}
+    <div id="user_info">Logged in as {{.user.User}}. <a href="http://localhost:8000/logout">Log out</a></div>
+    {{else}}
+    <div id="user_info">Not signed in. <a href="http://localhost:8000/login">Log in</a></div>
+    {{end}}
     <table id="recipes" class="recipes_table">
       <thead>
     <tr>
@@ -23,10 +28,10 @@
     </tr>
     </thead>
     <tbody>
-    {{range $i, $v := .}}
+    {{range $i, $v := .recipes}}
     <tr>
-      {{$item := index $ (reverseSlice $i (len $))}}
-      <td><a href='http://localhost:8000/recipe?id={{.ID}}'>{{$item.Title}}</a></td>
+      {{$item := index $.recipes (reverseSlice $i (len $.recipes))}}
+      <td><a href='http://localhost:8000/recipe?id={{$item.ID}}'>{{$item.Title}}</a></td>
       <td>{{$item.Author}}</td>
       <td>{{$item.Date}}</td>
       <td><button class="add_to_cart" type="button" onclick="updateCart({{$item.ID}})">Add to Grocery List</button></td>
